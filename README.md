@@ -9,7 +9,10 @@
 
 - [Nick182](https://github.com/Nick182-n)
 - [Vitória Duran](https://github.com/vitoriaduran)
-- 
+- [Pedro](https://github.com/phpedruo)
+- [Artur Valenca](https://github.com/ArturValenca)
+- [Eraldo Carneiro](https://github.com/ecln14)
+- [Daniel Bezerra](https://github.com/DanielBezerraCNC)
 
 </details>
 
