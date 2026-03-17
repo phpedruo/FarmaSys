@@ -31,9 +31,15 @@ O **FarmaTec** é um Sistema web para gerenciamento de medicamentos, controle de
   
   [🔗 Link para o protótipo](https://www.figma.com/design/Gq1mpKC5UJsOlDW0HWv0j7/Prototipo-Fds?node-id=0-1&m=dev&t=3wvaXqZB3DoHrjjN-1)
 
+### 🎥 Apresentação
+- **Screencast do Protótipo**
+  
+  [▶️ Assistir no YouTube](https://youtu.be/HkDrzKwF6tA)
+  
 ### 📊 Gestão de Projeto
 
 <img width="1340" height="197" alt="Quadro do Backlog" src=![WhatsApp Image 2026-03-17 at 09 32 51](https://github.com/user-attachments/assets/8af41c1e-92c1-4a05-8390-84888aacd409)
+
 
 
 **🏃‍♂️ Quadro da Sprint**
