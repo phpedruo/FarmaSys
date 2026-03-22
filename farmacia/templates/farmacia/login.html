@@ -1,0 +1,75 @@
+{% extends "farmacia/base.html" %}
+{% load static %}
+
+{% block title %}Login - FarmaTec{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-center min-h-[80vh] bg-white">
+    <div class="w-full max-w-md p-8 bg-white border border-gray-100 shadow-2xl rounded-2xl">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-extrabold text-[#2563eb]">Login</h1>
+            <p class="text-gray-500 mt-2">Acesse sua conta FarmaTec</p>
+        </div>
+
+        <form method="POST" action="{% url 'login' %}" class="space-y-6">
+            {% csrf_token %}
+            
+            {% if form.errors %}
+                <div class="alert alert-error shadow-sm rounded-lg py-3 px-4 text-sm bg-red-50 border border-red-200 text-red-700">
+                    <div class="flex gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-5 w-5" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        <span>Usuário ou senha inválidos.</span>
+                    </div>
+                </div>
+            {% endif %}
+            
+            <div class="form-control w-full">
+                <label class="label pt-0" for="id_username">
+                    <span class="label-text font-semibold text-gray-700">Nome de usuário</span>
+                </label>
+                {{ form.username }}
+            </div>
+            
+            <div class="form-control w-full">
+                <label class="label pt-0" for="id_password">
+                    <span class="label-text font-semibold text-gray-700">Senha</span>
+                </label>
+                {{ form.password }}
+            </div>
+            
+            <button type="submit" class="btn w-full border-none bg-[#2563eb] hover:bg-[#1d4ed8] text-white font-bold h-12 rounded-xl transition-all shadow-lg hover:shadow-blue-200">
+                Entrar
+            </button>
+            
+            <p class="text-center text-sm text-gray-600 mt-4">
+                Não tem uma conta? 
+                <a href="{% url 'register' %}" class="text-[#2563eb] font-bold hover:underline">Cadastre-se</a>
+            </p>
+        </form>
+        
+        <div class="mt-10 pt-6 border-t border-gray-100 text-center">
+            <p class="text-[10px] text-gray-400 uppercase tracking-widest">
+                © 2026 FarmaTec. Todos os direitos reservados.
+            </p>
+        </div>
+    </div>
+</div>
+
+<style>
+   
+    input {
+        width: 100%;
+        padding: 0.85rem 1rem;
+        border: 1px solid #e2e8f0;
+        border-radius: 0.75rem;
+        background-color: #f8fafc;
+        transition: all 0.2s ease-in-out;
+    }
+    input:focus {
+        outline: none;
+        border-color: #2563eb;
+        background-color: #ffffff;
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+    }
+</style>
+{% endblock %}

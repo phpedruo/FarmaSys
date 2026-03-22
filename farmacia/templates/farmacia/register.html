@@ -1,0 +1,90 @@
+{% extends "farmacia/base.html" %}
+{% load static %}
+
+{% block title %}Cadastro - FarmaTec{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-center min-h-[80vh] bg-white">
+    <div class="w-full max-w-md p-8 bg-white border border-gray-100 shadow-2xl rounded-2xl">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-extrabold text-[#2563eb]">Crie sua conta</h1>
+            <p class="text-gray-500 mt-2">Junte-se à FarmaTec</p>
+        </div>
+
+        <form method="POST" action="{% url 'register' %}" id="registerForm" class="space-y-5">
+            {% csrf_token %}
+            
+            {% if form.errors %}
+                <div class="alert alert-error shadow-sm rounded-lg py-3 px-4 text-sm bg-red-50 border border-red-200 text-red-700">
+                    <div class="flex flex-col gap-1">
+                        {% for field, errors in form.errors.items %}
+                            {% for error in errors %}
+                                <div class="flex items-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                    </svg>
+                                    <span>{{ error }}</span>
+                                </div>
+                            {% endfor %}
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+            
+            <div class="form-control w-full">
+                <label class="label pt-0" for="id_username">
+                    <span class="label-text font-semibold text-gray-700">Nome de usuário</span>
+                </label>
+                {{ form.username }}
+            </div>
+            
+            <div class="form-control w-full">
+                <label class="label pt-0" for="id_password1">
+                    <span class="label-text font-semibold text-gray-700">Senha</span>
+                </label>
+                {{ form.password1 }}
+            </div>
+
+            <div class="form-control w-full">
+                <label class="label pt-0" for="id_password2">
+                    <span class="label-text font-semibold text-gray-700">Confirme a senha</span>
+                </label>
+                {{ form.password2 }}
+            </div>
+            
+            <button type="submit" class="btn w-full border-none bg-[#2563eb] hover:bg-[#1d4ed8] text-white font-bold h-12 rounded-xl transition-all shadow-lg hover:shadow-blue-200">
+                Registrar
+            </button>
+            
+            <p class="text-center text-sm text-gray-600 mt-4">
+                Já tem uma conta? 
+                <a href="{% url 'login' %}" class="text-[#2563eb] font-bold hover:underline">Faça Login</a>
+            </p>
+        </form>
+        
+        <div class="mt-10 pt-6 border-t border-gray-100 text-center">
+            <p class="text-[10px] text-gray-400 uppercase tracking-widest">
+                © 2026 FarmaTec. Saúde em primeiro lugar.
+            </p>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Padronização dos campos do Django para o visual FarmaTec */
+    input {
+        width: 100%;
+        padding: 0.85rem 1rem;
+        border: 1px solid #e2e8f0;
+        border-radius: 0.75rem;
+        background-color: #f8fafc;
+        transition: all 0.2s ease-in-out;
+    }
+    input:focus {
+        outline: none;
+        border-color: #2563eb;
+        background-color: #ffffff;
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+    }
+</style>
+{% endblock %}
