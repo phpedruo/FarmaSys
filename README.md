@@ -57,31 +57,35 @@ O **FarmaTec** é um Sistema web para gerenciamento de medicamentos, controle de
 <summary><strong>💻 Entrega 2 - Primeiras Funcionalidades</strong></summary>
 
 ### ✅ Funcionalidades Implementadas
+- Sistema de login e registro
+- Gerente ter o controle de inserir produtos e descrições
+- Comprador ter o direito de visualizar e comprar os produtos selecionados anteriormenetes
+  
 
 ### 📊 Gestão de Projeto
 
 ## Prints do backlog
-**🏃‍♂️ Quadro do Backlog - Entrega 2**
+**🏃‍♂️  Backlog - Sprint 02**
 <img width="1039" height="181" alt="screenshot-1774555444951" src="https://github.com/user-attachments/assets/692925b6-a9c8-47f0-b276-730537623ae0" />
 
-**📋 Quadro da Sprint**
+**📋 Lista de histórias -Sprint - 02**
 <img width="1051" height="288" alt="screenshot-1774555522544" src="https://github.com/user-attachments/assets/ffb813f8-fd73-4aee-8d8a-f3cec52cae90" />
 
-## Prints do Quadro
-![]()
-
+## Print do Quadro da Sprint 02
+<img width="1170" height="600" alt="screenshot-1774563567081" src="https://github.com/user-attachments/assets/40dcea5f-9831-4f5e-b317-90e74f3bff39" />
 
 ### 🐛 Controle de Issues
 - **Issue/Bug Tracker**
   
-![]()
+<img width="1296" height="505" alt="screenshot-1774562117294" src="https://github.com/user-attachments/assets/cdd93a53-7a79-4d18-847b-f6e59ee751ea" />
+
 
 ### 🌐 Link do Deploy
 - **🔗 Aplicação em Produção:** [farmatec.onrender.com](https://farmatec.onrender.com/)
 
 > ⚠️ **Observação:** Como estamos usando o plano gratuito do Render, após um período de tempo sem atividade, a aplicação em deploy entrará em "hibernação". Ao acessar a aplicação nesse estado, é necessário esperar até 1-2 minutos para que ela "acorde".
 
-**Intrução de acesso:** Ao acessar o sistema com o link acima insira essas informações:|user:admin|senha:admin@123|
+**Intrução de acesso:** Ao acessar o sistema com o link acima, insira essas informações:|user:admin|senha:admin@123|
 
 ### 🎥 Apresentação
 - **Screencast das Funcionalidades**
