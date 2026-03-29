@@ -1,9 +1,11 @@
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib.auth.views import LoginView
+from django.http import HttpResponseForbidden, JsonResponse
 
 
-from .models import Produto, Loja
+from .models import Produto, Loja, Estoque
 
 def pagina_inicial(request):
     """Landing page com produtos em destaque e informações"""
@@ -46,3 +48,33 @@ def register(request):
     else:
         form = UserCreationForm()
     return render(request, 'farmacia/register.html', {'form': form})
+
+
+@login_required
+def consulta_estoque(request):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden("Acesso negado. Apenas gerentes podem consultar o estoque.")
+
+    nome = request.GET.get('nome', '').strip()
+    codigo = request.GET.get('codigo', '').strip()
+
+    estoques = Estoque.objects.select_related('produto', 'loja').all()
+
+    if nome:
+        estoques = estoques.filter(produto__nome__icontains=nome)
+
+    if codigo:
+        estoques = estoques.filter(produto__codigo__icontains=codigo)
+
+    resultados = [
+        {
+            'produto_nome': estoque.produto.nome,
+            'produto_codigo': estoque.produto.codigo,
+            'quantidade': estoque.quantidade,
+            'data_ultima_atualizacao': estoque.data_ultima_atualizacao.isoformat(),
+            'mensagem': estoque.mensagem_status_estoque(),
+        }
+        for estoque in estoques
+    ]
+
+    return JsonResponse({'total': len(resultados), 'resultados': resultados})
