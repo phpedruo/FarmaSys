@@ -56,28 +56,44 @@ def consulta_estoque(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden("Acesso negado. Apenas gerentes podem consultar o estoque.")
 
-    nome = request.GET.get('nome', '').strip()
-    codigo = request.GET.get('codigo', '').strip()
+    try:
+        nome = request.GET.get('nome', '').strip()
+        codigo = request.GET.get('codigo', '').strip()
 
-    estoques = Estoque.objects.select_related('produto', 'loja').all()
+        estoques = Estoque.objects.select_related('produto', 'loja').all()
 
-    if nome or codigo:
-        filtro = Q()
-        if nome:
-            filtro |= Q(produto__nome__icontains=nome)
-        if codigo:
-            filtro |= Q(produto__codigo__icontains=codigo)
-        estoques = estoques.filter(filtro)
+        if nome or codigo:
+            filtro = Q()
+            if nome:
+                filtro |= Q(produto__nome__icontains=nome)
+            if codigo:
+                filtro |= Q(produto__codigo__icontains=codigo)
+            estoques = estoques.filter(filtro)
 
-    resultados = [
-        {
-            'produto_nome': estoque.produto.nome,
-            'produto_codigo': estoque.produto.codigo,
-            'quantidade': estoque.quantidade,
-            'data_ultima_atualizacao': estoque.data_ultima_atualizacao.isoformat(),
-            'mensagem': estoque.mensagem_status_estoque(),
-        }
-        for estoque in estoques
-    ]
+        estoques = estoques.filter(quantidade__lt=Estoque.ESTOQUE_MINIMO_PADRAO)
 
-    return JsonResponse({'total': len(resultados), 'resultados': resultados})
+        resultados = [
+            {
+                'produto_nome': estoque.produto.nome,
+                'produto_codigo': estoque.produto.codigo,
+                'quantidade': estoque.quantidade,
+                'data_ultima_atualizacao': estoque.data_ultima_atualizacao.isoformat(),
+                'mensagem': 'Estoque abaixo do mínimo. Iniciar o processo de compras.',
+            }
+            for estoque in estoques
+        ]
+
+        if not resultados:
+            return JsonResponse({
+                'total': 0,
+                'resultados': [],
+                'mensagem': 'Erro ao acessar o Estoque',
+            })
+
+        return JsonResponse({'total': len(resultados), 'resultados': resultados})
+    except Exception:
+        return JsonResponse({
+            'total': 0,
+            'resultados': [],
+            'mensagem': 'Erro ao acessar o Estoque',
+        })
