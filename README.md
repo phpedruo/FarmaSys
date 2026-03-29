@@ -60,6 +60,7 @@ O **FarmaTec** é um Sistema web para gerenciamento de medicamentos, controle de
 - Sistema de login e registro
 - Gerente ter o controle de inserir produtos e descrições
 - Comprador ter o direito de visualizar e comprar os produtos selecionados anteriormenetes
+- Consulta de estoque
   
 
 ### 📊 Gestão de Projeto
