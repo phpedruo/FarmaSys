@@ -1,83 +1,94 @@
-{% extends 'farmacia/base.html' %}
-
-{% block title %}Consulta de Estoque | FarmaTec{% endblock %}
-
-{% block content %}
+{% extends 'farmacia/base.html' %} {% block title %}Consulta de Estoque |
+FarmaTec{% endblock %} {% block content %}
 <div class="max-w-6xl mx-auto">
-    <div class="mb-8">
-        <h1 class="text-3xl font-bold text-[#1d4ed8]">Consulta de Estoque</h1>
-        <p class="text-gray-600 mt-2">Busque por nome ou codigo do produto para verificar itens com estoque abaixo do minimo.</p>
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold text-[#1d4ed8]">Consulta de Estoque</h1>
+    <p class="text-gray-600 mt-2">
+      Busque por nome ou codigo do produto para verificar itens com estoque
+      abaixo do minimo.
+    </p>
+  </div>
+
+  <div class="bg-white rounded-xl shadow-md border border-gray-100 p-6 mb-6">
+    <form method="get" class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+      <div>
+        <label for="nome" class="block text-sm font-semibold text-gray-700 mb-2"
+          >Nome do produto</label
+        >
+        <input
+          id="nome"
+          name="nome"
+          type="text"
+          value="{{ nome }}"
+          placeholder="Ex: Dipirona"
+          class="input input-bordered w-full"
+        />
+      </div>
+
+      <div>
+        <label
+          for="codigo"
+          class="block text-sm font-semibold text-gray-700 mb-2"
+          >Codigo do produto</label
+        >
+        <input
+          id="codigo"
+          name="codigo"
+          type="text"
+          value="{{ codigo }}"
+          placeholder="Ex: DIP001"
+          class="input input-bordered w-full"
+        />
+      </div>
+
+      <button
+        type="submit"
+        class="btn bg-[#2563eb] border-[#2563eb] text-white hover:bg-[#1d4ed8] hover:border-[#1d4ed8]"
+      >
+        Consultar
+      </button>
+    </form>
+  </div>
+
+  {% if mensagem %}
+  <div class="alert alert-error mb-6">
+    <span>{{ mensagem }}</span>
+  </div>
+  {% endif %} {% if resultados %}
+  <div
+    class="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden"
+  >
+    <div class="overflow-x-auto">
+      <table class="table table-zebra w-full">
+        <thead class="bg-[#eff6ff] text-[#1e3a8a]">
+          <tr>
+            <th>Nome</th>
+            <th>Codigo</th>
+            <th>Quantidade</th>
+            <th>Ultima atualizacao</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in resultados %}
+          <tr>
+            <td class="font-medium">{{ item.produto_nome }}</td>
+            <td>{{ item.produto_codigo }}</td>
+            <td>{{ item.quantidade }}</td>
+            <td>{{ item.data_ultima_atualizacao|date:'d/m/Y H:i' }}</td>
+            <td>
+              <span
+                class="badge text-white {% if item.abaixo_minimo %}badge-warning{% else %}badge-success{% endif %}"
+              >
+                {{ item.mensagem }}
+              </span>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
-
-    <div class="bg-white rounded-xl shadow-md border border-gray-100 p-6 mb-6">
-        <form method="get" class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
-            <div>
-                <label for="nome" class="block text-sm font-semibold text-gray-700 mb-2">Nome do produto</label>
-                <input
-                    id="nome"
-                    name="nome"
-                    type="text"
-                    value="{{ nome }}"
-                    placeholder="Ex: Dipirona"
-                    class="input input-bordered w-full"
-                >
-            </div>
-
-            <div>
-                <label for="codigo" class="block text-sm font-semibold text-gray-700 mb-2">Codigo do produto</label>
-                <input
-                    id="codigo"
-                    name="codigo"
-                    type="text"
-                    value="{{ codigo }}"
-                    placeholder="Ex: DIP001"
-                    class="input input-bordered w-full"
-                >
-            </div>
-
-            <button type="submit" class="btn bg-[#2563eb] border-[#2563eb] text-white hover:bg-[#1d4ed8] hover:border-[#1d4ed8]">
-                Consultar
-            </button>
-        </form>
-    </div>
-
-    {% if mensagem %}
-        <div class="alert alert-error mb-6">
-            <span>{{ mensagem }}</span>
-        </div>
-    {% endif %}
-
-    {% if resultados %}
-        <div class="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
-            <div class="overflow-x-auto">
-                <table class="table table-zebra w-full">
-                    <thead class="bg-[#eff6ff] text-[#1e3a8a]">
-                        <tr>
-                            <th>Nome</th>
-                            <th>Codigo</th>
-                            <th>Quantidade</th>
-                            <th>Ultima atualizacao</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for item in resultados %}
-                            <tr>
-                                <td class="font-medium">{{ item.produto_nome }}</td>
-                                <td>{{ item.produto_codigo }}</td>
-                                <td>{{ item.quantidade }}</td>
-                                <td>{{ item.data_ultima_atualizacao|date:'d/m/Y H:i' }}</td>
-                                <td>
-                                    <span class="badge badge-warning text-white">
-                                        {{ item.mensagem }}
-                                    </span>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    {% endif %}
+  </div>
+  {% endif %}
 </div>
 {% endblock %}

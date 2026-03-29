@@ -80,7 +80,8 @@ def consulta_estoque(request):
                 'produto_codigo': estoque.produto.codigo,
                 'quantidade': estoque.quantidade,
                 'data_ultima_atualizacao': estoque.data_ultima_atualizacao,
-                'mensagem': 'Estoque abaixo do mínimo. Iniciar o processo de compras.',
+                'mensagem': estoque.mensagem_status_estoque(),
+                'abaixo_minimo': estoque.esta_abaixo_estoque_minimo(),
             }
             for estoque in estoques
         ]
