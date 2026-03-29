@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.contrib.auth.views import LoginView
-from django.http import HttpResponseForbidden, JsonResponse
+from django.http import HttpResponseForbidden
 
 
 from .models import Produto, Loja, Estoque
@@ -56,10 +56,12 @@ def consulta_estoque(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden("Acesso negado. Apenas gerentes podem consultar o estoque.")
 
-    try:
-        nome = request.GET.get('nome', '').strip()
-        codigo = request.GET.get('codigo', '').strip()
+    nome = request.GET.get('nome', '').strip()
+    codigo = request.GET.get('codigo', '').strip()
+    resultados = []
+    mensagem = ''
 
+    try:
         estoques = Estoque.objects.select_related('produto', 'loja').all()
 
         if nome or codigo:
@@ -77,23 +79,22 @@ def consulta_estoque(request):
                 'produto_nome': estoque.produto.nome,
                 'produto_codigo': estoque.produto.codigo,
                 'quantidade': estoque.quantidade,
-                'data_ultima_atualizacao': estoque.data_ultima_atualizacao.isoformat(),
+                'data_ultima_atualizacao': estoque.data_ultima_atualizacao,
                 'mensagem': 'Estoque abaixo do mínimo. Iniciar o processo de compras.',
             }
             for estoque in estoques
         ]
 
         if not resultados:
-            return JsonResponse({
-                'total': 0,
-                'resultados': [],
-                'mensagem': 'Erro ao acessar o Estoque',
-            })
-
-        return JsonResponse({'total': len(resultados), 'resultados': resultados})
+            mensagem = 'Erro ao acessar o Estoque'
     except Exception:
-        return JsonResponse({
-            'total': 0,
-            'resultados': [],
-            'mensagem': 'Erro ao acessar o Estoque',
-        })
+        resultados = []
+        mensagem = 'Erro ao acessar o Estoque'
+
+    contexto = {
+        'nome': nome,
+        'codigo': codigo,
+        'resultados': resultados,
+        'mensagem': mensagem,
+    }
+    return render(request, 'farmacia/consulta_estoque.html', contexto)
