@@ -66,7 +66,7 @@ class ConsultaEstoqueTests(TestCase):
 	def test_usuario_anonimo_sem_acesso(self):
 		response = self.client.get(self.url)
 		self.assertEqual(response.status_code, 302)
-		self.assertIn(reverse('login'), response.url)
+		self.assertRedirects(response, f"{reverse('login')}?next={self.url}")
 
 	def test_usuario_autenticado_nao_superusuario_sem_acesso(self):
 		self.client.login(username='funcionario', password='senhaforte123')
