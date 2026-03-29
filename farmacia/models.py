@@ -93,9 +93,12 @@ class ItemPedido(models.Model):
         return self.preco_unitario * self.quantidade
     
 class Estoque(models.Model):
+    ESTOQUE_MINIMO_PADRAO = 30
+
     produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
     loja = models.ForeignKey(Loja, on_delete=models.CASCADE) 
     quantidade = models.PositiveIntegerField()
+    data_ultima_atualizacao = models.DateTimeField(auto_now=True)
 
     class Meta:
         # Garante que cada produto tenha apenas um registro de quantidade por loja
@@ -104,7 +107,17 @@ class Estoque(models.Model):
     def __str__(self):
         return f"{self.produto.nome} na {self.loja.nome}: {self.quantidade}"
 
-    @staticmethod
-    def abaixo_estoque_minimo(minimo=30): 
-        return Estoque.objects.filter(quantidade__lt=minimo)
+    def esta_abaixo_estoque_minimo(self, minimo=None):
+        limite = minimo if minimo is not None else self.ESTOQUE_MINIMO_PADRAO
+        return self.quantidade < limite
+
+    def mensagem_status_estoque(self, minimo=None):
+        if self.esta_abaixo_estoque_minimo(minimo=minimo):
+            return "Estoque abaixo do mínimo. Iniciar o processo de compras."
+        return "Produto em estoque"
+
+    @classmethod
+    def abaixo_estoque_minimo(cls, minimo=None):
+        limite = minimo if minimo is not None else cls.ESTOQUE_MINIMO_PADRAO
+        return cls.objects.filter(quantidade__lt=limite)
 # Create your models here.
