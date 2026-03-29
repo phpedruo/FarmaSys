@@ -1,5 +1,6 @@
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.contrib.auth.views import LoginView
 from django.http import HttpResponseForbidden, JsonResponse
@@ -60,11 +61,13 @@ def consulta_estoque(request):
 
     estoques = Estoque.objects.select_related('produto', 'loja').all()
 
-    if nome:
-        estoques = estoques.filter(produto__nome__icontains=nome)
-
-    if codigo:
-        estoques = estoques.filter(produto__codigo__icontains=codigo)
+    if nome or codigo:
+        filtro = Q()
+        if nome:
+            filtro |= Q(produto__nome__icontains=nome)
+        if codigo:
+            filtro |= Q(produto__codigo__icontains=codigo)
+        estoques = estoques.filter(filtro)
 
     resultados = [
         {
