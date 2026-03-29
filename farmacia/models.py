@@ -113,7 +113,7 @@ class Estoque(models.Model):
 
     def mensagem_status_estoque(self, minimo=None):
         if self.esta_abaixo_estoque_minimo(minimo=minimo):
-            return "Estoque abaixo do minimo. Iniciar o processo de compras."
+            return "Estoque abaixo do mínimo. Iniciar o processo de compras."
         return "Produto em estoque"
 
     @classmethod

@@ -72,8 +72,6 @@ def consulta_estoque(request):
                 filtro |= Q(produto__codigo__icontains=codigo)
             estoques = estoques.filter(filtro)
 
-        estoques = estoques.filter(quantidade__lt=Estoque.ESTOQUE_MINIMO_PADRAO)
-
         resultados = [
             {
                 'produto_nome': estoque.produto.nome,
