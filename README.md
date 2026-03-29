@@ -70,10 +70,12 @@ O **FarmaTec** é um Sistema web para gerenciamento de medicamentos, controle de
 <img width="1039" height="181" alt="screenshot-1774555444951" src="https://github.com/user-attachments/assets/692925b6-a9c8-47f0-b276-730537623ae0" />
 
 **📋 Lista de histórias -Sprint - 02**
-<img width="1051" height="288" alt="screenshot-1774555522544" src="https://github.com/user-attachments/assets/ffb813f8-fd73-4aee-8d8a-f3cec52cae90" />
+![Captura de tela_29-3-2026_204650_cesar-team-vnvz0uh0 atlassian net](https://github.com/user-attachments/assets/6dfa7367-e81a-4118-b9ee-db1b18234859)
+
 
 ## Print do Quadro da Sprint 02
-<img width="1170" height="600" alt="screenshot-1774563567081" src="https://github.com/user-attachments/assets/40dcea5f-9831-4f5e-b317-90e74f3bff39" />
+![Captura de tela_29-3-2026_20485_cesar-team-vnvz0uh0 atlassian net](https://github.com/user-attachments/assets/21107ced-3b0a-4b50-b0e0-3415a038e16e)
+
 
 ### 🐛 Controle de Issues
 - **Issue/Bug Tracker**
