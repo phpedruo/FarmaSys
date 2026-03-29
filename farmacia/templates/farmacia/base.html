@@ -29,7 +29,9 @@
   </head>
 
   <body>
-    <div class="navbar bg-[#2563eb] text-white shadow-lg fixed top-0 z-50">
+    <div
+      class="navbar min-h-0 h-14 px-3 md:px-4 bg-[#2563eb] text-white shadow-lg fixed top-0 left-0 right-0 z-50"
+    >
       <!-- ESQUERDA -->
       <div class="navbar-start">
         <a href="{% url 'home' %}" class="btn btn-ghost text-xl text-white"
@@ -69,8 +71,7 @@
       <!-- DIREITA -->
       <div class="navbar-end">
         {% if user.is_authenticated %}
-        <span class="mr-4 hidden lg:inline">Olá, {{ user.username }}</span>
-
+        {% if request.resolver_match.url_name == 'home' %}
         <form method="post" action="{% url 'logout' %}">
           {% csrf_token %}
           <button
@@ -80,6 +81,7 @@
             Sair
           </button>
         </form>
+        {% endif %}
         {% else %}
         <div class="flex gap-2 mr-4">
           <a
@@ -100,7 +102,7 @@
     </div>
 
     <!-- ESPAÇO DA NAVBAR -->
-    <div class="h-16"></div>
+    <div class="h-14"></div>
 
     <!-- CONTEÚDO -->
     <div class="min-h-screen bg-white">
