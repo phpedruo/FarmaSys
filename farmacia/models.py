@@ -57,11 +57,18 @@ class Produto(models.Model):
         return total if total is not None else 0
 
     def proximoDataDeValidade(self):
-        from django.utils import timezone
-        from datetime import timedelta
-        hoje = timezone.now().date()
-        prazoLimite = hoje + timedelta(days=30)
-        return hoje <= self.dataValidade <= prazoLimite
+        if self.dataValidade:
+            hoje = timezone.now().date()
+            prazoLimite = hoje + timedelta(days=30)
+            return hoje <= self.dataValidade <= prazoLimite
+        return False
+    
+    @property
+    def preco_com_desconto(self):
+        valor = float(self.preco) * 0.8
+        return f"{valor:.2f}"
+        
+    
 class Pedido(models.Model):
     # O comprador (quem está logado)
     usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)

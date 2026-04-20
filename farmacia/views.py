@@ -50,19 +50,12 @@ def register(request):
         form = UserCreationForm()
     return render(request, 'farmacia/register.html', {'form': form})
 
-def produtoAdmin():
-    list_display = ('nome', 'codigo','dataValidade', 'alerta_validade')
-    list_filter = ('dataValidade', 'categoria')
-    
-    def alertaValidade(self, obj):
-        if obj.proximoDataDeValidade():
-            return "PROXIMO AO VENCIMENTO"
-        return "REGULAR"
-    
-    alertaValidade.short_description = 'Status de Validade'
-    
-    
 
+    
+def pagina_ofertas(request):
+    todos_produtos = Produto.objects.all()
+    produtos_em_ofertas = [p for p in todos_produtos if p.proximoDataDeValidade()]
+    return render(request, 'farmacia/promocoes.html', {'produtos': produtos_em_ofertas})
 
 @login_required
 def consulta_estoque(request):
