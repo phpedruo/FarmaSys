@@ -46,3 +46,16 @@ def register(request):
     else:
         form = UserCreationForm()
     return render(request, 'farmacia/register.html', {'form': form})
+
+def produtoAdmin():
+    list_display = ('nome', 'codigo','dataValidade', 'alerta_validade')
+    list_filter = ('dataValidade', 'categoria')
+    
+    def alertaValidade(self, obj):
+        if obj.proximoDataDeValidade():
+            return "PROXIMO AO VENCIMENTO"
+        return "REGULAR"
+    
+    alertaValidade.short_description = 'Status de Validade'
+    
+    
