@@ -1,9 +1,12 @@
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.contrib.auth.views import LoginView
+from django.http import HttpResponseForbidden
 
 
-from .models import Produto, Loja
+from .models import Produto, Loja, Estoque
 
 def pagina_inicial(request):
     """Landing page com produtos em destaque e informações"""
@@ -59,3 +62,51 @@ def produtoAdmin():
     alertaValidade.short_description = 'Status de Validade'
     
     
+
+
+@login_required
+def consulta_estoque(request):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden("Acesso negado. Apenas gerentes podem consultar o estoque.")
+
+    nome = request.GET.get('nome', '').strip()
+    codigo = request.GET.get('codigo', '').strip()
+    resultados = []
+    mensagem = ''
+
+    try:
+        estoques = Estoque.objects.select_related('produto', 'loja').all()
+
+        if nome or codigo:
+            filtro = Q()
+            if nome:
+                filtro |= Q(produto__nome__icontains=nome)
+            if codigo:
+                filtro |= Q(produto__codigo__icontains=codigo)
+            estoques = estoques.filter(filtro)
+
+        resultados = [
+            {
+                'produto_nome': estoque.produto.nome,
+                'produto_codigo': estoque.produto.codigo,
+                'quantidade': estoque.quantidade,
+                'data_ultima_atualizacao': estoque.data_ultima_atualizacao,
+                'mensagem': estoque.mensagem_status_estoque(),
+                'abaixo_minimo': estoque.esta_abaixo_estoque_minimo(),
+            }
+            for estoque in estoques
+        ]
+
+        if not resultados:
+            mensagem = 'Erro ao acessar o Estoque'
+    except Exception:
+        resultados = []
+        mensagem = 'Erro ao acessar o Estoque'
+
+    contexto = {
+        'nome': nome,
+        'codigo': codigo,
+        'resultados': resultados,
+        'mensagem': mensagem,
+    }
+    return render(request, 'farmacia/consulta_estoque.html', contexto)
