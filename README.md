@@ -103,3 +103,58 @@ O **FarmaTec** é um Sistema web para gerenciamento de medicamentos, controle de
 
 </details>
 
+<details>
+<summary><strong>💻 Entrega 3 - Funcionalidades e Testes automatizados</strong></summary>
+
+### ✅ Funcionalidades Implementadas
+- Comprador ter direito a Desconto Baseado na data de validade
+- Comprador ter direito a Visualizar compras anteriores e repetir se achar necessário
+- Testes automatizados das historias
+  
+  
+
+### 📊 Gestão de Projeto
+
+## Prints do backlog
+**🏃‍♂️  Backlog - Sprint 03**
+<img width="1039" height="181" alt="screenshot-1774555444951" src="https://github.com/user-attachments/assets/692925b6-a9c8-47f0-b276-730537623ae0" />
+
+**📋 Lista de histórias -Sprint - 03**
+<img width="1164" height="204" alt="Captura de tela 2026-04-21 100906" src="https://github.com/user-attachments/assets/c5d77c45-26fd-4e72-9e3c-8d0f1a0360de" />
+
+
+## Print do Quadro da Sprint 03
+<img width="1159" height="570" alt="image" src="https://github.com/user-attachments/assets/c3ab48d1-f5ff-4af0-8d4e-11d39137c2e3" />
+
+
+### 🐛 Controle de Issues
+- **Issue/Bug Tracker**
+  
+<img width="1309" height="557" alt="image" src="https://github.com/user-attachments/assets/1e8aa139-ae63-47f3-9288-6e5c835c8306" />
+
+
+
+### 🌐 Link do Deploy
+- **🔗 Aplicação em Produção:** [farmatec.onrender.com](https://farmatec.onrender.com/)
+
+> ⚠️ **Observação:** Como estamos usando o plano gratuito do Render, após um período de tempo sem atividade, a aplicação em deploy entrará em "hibernação". Ao acessar a aplicação nesse estado, é necessário esperar até 1-2 minutos para que ela "acorde".
+
+**Intrução de acesso:** Ao acessar o sistema com o link acima, insira essas informações:|user:admin|senha:admin@123|
+
+### 🎥 Apresentação
+- **Screencast das Novas Historias do Usuários**
+  
+- **Screencast dos Testes Automatizados**
+
+- **Screencast para o Teste CI/CD**
+  
+### 📋 Documentação
+- **Relatório de Programação em Par 3**
+  
+  [📄 Link para o relatório](https://docs.google.com/document/d/1nrI-Gh9Ewjh2qyL0VqIhPDLBWp4PZearCMu3cJqklTM/edit?usp=drivesdk)
+
+
+</details>
+
+
+
