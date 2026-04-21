@@ -1,49 +1,142 @@
-{% extends "farmacia/base.html" %}
+{% extends 'farmacia/base.html' %}
+{% load static %}
+
+{% block title %}Promoções - FarmaTec{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <div class="text-center mb-5">
-        <h1 class="display-4 text-primary">⚡ Ofertas Imperdíveis ⚡</h1>
-        <p class="lead">Produtos próximos ao vencimento com <strong>20% de desconto!</strong></p>
-    </div>
 
-    <div class="row">
-        {% for produto in produtos %}
-        <div class="col-md-4 mb-4">
-            <div class="card h-100 shadow-sm border-warning">
-                <div class="card-header bg-warning text-dark text-center font-weight-bold">
-                    Oportunidade Única
-                </div>
-                <div class="card-body">
-                    <h5 class="card-title text-center">{{ produto.nome }}</h5>
-                    <p class="card-text text-muted small text-center">Cód: {{ produto.codigo }}</p>
-                    
-                    <hr>
-                    
-                    <div class="text-center">
-                        <p class="mb-0"><s>De: R$ {{ produto.preco }}</s></p>
-                        <h3 class="text-success font-weight-bold">
-                            Por: R$ {{ produto.preco_com_desconto }}
-                        </h3>
-                    </div>
-
-                    <div class="alert alert-danger mt-3 text-center p-2" role="alert">
-                        <small>Vence em: <strong>{{ produto.dataValidade|date:"d/m/Y" }}</strong></small>
-                    </div>
-                </div>
-                <div class="card-footer bg-white border-top-0">
-                    <a href="#" class="btn btn-primary btn-block">Adicionar ao Carrinho</a>
-                </div>
-            </div>
-        </div>
-        {% empty %}
-        <div class="col-12 text-center">
-            <div class="alert alert-info">
-                <h4>Nenhuma promoção ativa no momento.</h4>
-                <p>Volte em breve para conferir novas ofertas!</p>
-            </div>
-        </div>
-        {% endfor %}
+<div class="page-header">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="{% url 'home' %}">Início</a>
+      <span>/</span>
+      <span>Promoções</span>
     </div>
+    <div class="d-flex align-center justify-between">
+      <div>
+        <h1>🔥 Promoções Relâmpago</h1>
+        <p>Produtos próximos ao vencimento com 20% de desconto. Aproveite!</p>
+      </div>
+      {% if user.is_staff %}
+        <a href="{% url 'admin:index' %}" class="btn btn-primary">
+          <i class="fa fa-cog"></i> Gerenciar Produtos
+        </a>
+      {% endif %}
+    </div>
+  </div>
 </div>
+
+<!-- PROMO HERO -->
+<div style="background:linear-gradient(135deg, #ff6500, #e05800); padding:28px 0; margin-bottom:32px;">
+  <div class="container">
+    <div class="d-flex align-center gap-3">
+      <span style="font-size:3rem;">⏰</span>
+      <div style="color:#fff;">
+        <h2 style="font-size:1.4rem; font-weight:900; margin-bottom:4px;">20% OFF em produtos selecionados!</h2>
+        <p style="opacity:0.9; font-size:0.95rem; font-weight:600;">
+          Produtos com validade nos próximos 30 dias. Qualidade garantida!
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container" style="padding-bottom:60px;">
+
+  {% if produtos %}
+    <div class="section-title">
+      <h2>Ofertas Ativas ({{ produtos|length }} produto{{ produtos|length|pluralize }})</h2>
+    </div>
+
+    <div class="product-grid">
+      {% for produto in produtos %}
+      <div class="product-card">
+        <span class="badge-expiring">Vence em breve</span>
+        <span class="badge-discount">-20%</span>
+
+        <div class="product-card-img">
+          <span style="font-size:3.5rem;">💊</span>
+        </div>
+
+        <div class="product-card-body">
+          <p class="product-card-name">{{ produto.nome }}</p>
+          <p style="font-size:0.78rem; color:var(--text-light); font-weight:600;">
+            {{ produto.categoria }} · {{ produto.unidade_medida }}
+          </p>
+          <p style="font-size:0.82rem; color:var(--text-light); font-weight:600; margin-bottom:6px;">
+            {{ produto.descricao|truncatechars:55 }}
+          </p>
+
+          <p class="product-old-price">De R$ {{ produto.preco }}</p>
+          <p class="product-card-price" style="color:var(--accent);">R$ {{ produto.preco_com_desconto }}</p>
+
+          <div class="d-flex align-center gap-1" style="margin-top:6px;">
+            <span class="countdown" data-vencimento="{{ produto.dataValidade|date:'Y-m-d' }}">
+              ⏱ <span class="timer-text">Calculando...</span>
+            </span>
+          </div>
+
+          <p style="font-size:0.78rem; color:var(--text-light); font-weight:600; margin-top:4px;">
+            Estoque: {{ produto.estoque_total }} unid.
+          </p>
+        </div>
+
+        <div class="product-card-footer">
+          {% if produto.estoque_total > 0 %}
+            <a href="#" class="btn btn-accent">
+              <i class="fa fa-shopping-cart"></i> Comprar Agora
+            </a>
+          {% else %}
+            <button class="btn" style="background:#e0e0e0; color:#999; cursor:not-allowed;" disabled>
+              Sem Estoque
+            </button>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+  {% else %}
+    <div style="text-align:center; padding:80px 20px;">
+      <span style="font-size:5rem;">🎉</span>
+      <h3 style="font-size:1.3rem; font-weight:900; margin-top:20px; margin-bottom:10px;">
+        Nenhuma promoção ativa no momento
+      </h3>
+      <p style="color:var(--text-light); font-weight:600; margin-bottom:24px;">
+        As promoções aparecem automaticamente quando um produto fica a menos de 30 dias do vencimento.
+      </p>
+      <a href="{% url 'produtos' %}" class="btn btn-primary btn-lg">
+        <i class="fa fa-pills"></i> Ver Todos os Produtos
+      </a>
+    </div>
+  {% endif %}
+
+  <div class="alert alert-info mt-4" style="max-width:600px; margin-left:auto; margin-right:auto; text-align:center;">
+    <i class="fa fa-shield-alt"></i>
+    <strong>Garantia de Qualidade:</strong> Todos os produtos com desconto por vencimento próximo
+    são 100% seguros para consumo dentro do prazo indicado.
+  </div>
+
+</div>
+
+{% block extra_js %}
+<script>
+  function atualizarTimers() {
+    document.querySelectorAll('.countdown[data-vencimento]').forEach(el => {
+      const vencimento = new Date(el.dataset.vencimento + 'T23:59:59');
+      const agora = new Date();
+      const diff = vencimento - agora;
+      const timerEl = el.querySelector('.timer-text');
+      if (diff <= 0) { timerEl.textContent = 'Expirado'; el.style.background = '#999'; return; }
+      const dias  = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const horas = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const mins  = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      timerEl.textContent = dias > 0 ? `${dias}d ${horas}h restantes` : `${horas}h ${mins}min restantes`;
+    });
+  }
+  atualizarTimers();
+  setInterval(atualizarTimers, 60000);
+</script>
+{% endblock %}
+
 {% endblock %}

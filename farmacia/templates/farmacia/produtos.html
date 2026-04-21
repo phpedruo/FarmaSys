@@ -1,0 +1,112 @@
+{% extends 'farmacia/base.html' %}
+{% load static %}
+
+{% block title %}Produtos - FarmaTec{% endblock %}
+
+{% block content %}
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="{% url 'home' %}">Início</a>
+      <span>/</span>
+      <span>Produtos</span>
+    </div>
+    <div class="d-flex align-center justify-between">
+      <div>
+        <h1><i class="fa fa-pills"></i> Nossos Produtos</h1>
+        <p>{{ produtos|length }} produto{{ produtos|length|pluralize }} disponível{{ produtos|length|pluralize:"is" }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FILTRO POR CATEGORIA -->
+<div class="category-bar" style="margin-bottom:0;">
+  <div class="category-bar-inner">
+    <a href="{% url 'produtos' %}" class="{% if not categoria_ativa %}active{% endif %}">Todos</a>
+    {% for cat in categorias %}
+      <a href="{% url 'produtos' %}?categoria={{ cat }}"
+         class="{% if categoria_ativa == cat %}active{% endif %}">
+        {{ cat }}
+      </a>
+    {% endfor %}
+  </div>
+</div>
+
+<div class="container py-4" style="padding-bottom:60px;">
+
+  <div class="product-grid">
+    {% for produto in produtos %}
+    <div class="product-card">
+
+      {% if produto.proximoDataDeValidade %}
+        <span class="badge-expiring">Vence em breve</span>
+        <span class="badge-discount">-20%</span>
+      {% endif %}
+
+      <div class="product-card-img">
+        <span style="font-size:3.5rem;">💊</span>
+      </div>
+
+      <div class="product-card-body">
+        <p class="product-card-name">{{ produto.nome }}</p>
+        <p style="font-size:0.78rem; color:var(--text-light); font-weight:600; margin-bottom:4px;">
+          {{ produto.categoria }} · {{ produto.unidade_medida }}
+        </p>
+        <p style="font-size:0.8rem; color:var(--text-light); font-weight:600;">
+          {{ produto.descricao|truncatechars:55 }}
+        </p>
+
+        {% if produto.proximoDataDeValidade %}
+          <p class="product-old-price">De R$ {{ produto.preco }}</p>
+          <p class="product-card-price" style="color:var(--accent);">R$ {{ produto.preco_com_desconto }}</p>
+        {% else %}
+          <p class="product-card-price">R$ {{ produto.preco }}</p>
+        {% endif %}
+
+        <p style="font-size:0.78rem; color:var(--text-light); font-weight:600;">
+          Cód: {{ produto.codigo }}
+        </p>
+
+        <!-- Estoque total do produto (soma de todas as lojas) -->
+        {% with total=produto.estoque_total %}
+          {% if total == 0 %}
+            <p style="font-size:0.8rem; color:var(--danger); font-weight:800;">⛔ Sem estoque</p>
+          {% elif total < 10 %}
+            <p style="font-size:0.8rem; color:var(--warning); font-weight:800;">⚠ Últimas unidades</p>
+          {% else %}
+            <p style="font-size:0.8rem; color:var(--success); font-weight:800;">✅ Disponível</p>
+          {% endif %}
+        {% endwith %}
+      </div>
+
+      <div class="product-card-footer">
+        {% if produto.estoque_total > 0 %}
+          {% if produto.proximoDataDeValidade %}
+            <a href="#" class="btn btn-accent">🔥 Comprar com Desconto</a>
+          {% else %}
+            <a href="#" class="btn btn-primary">Comprar</a>
+          {% endif %}
+        {% else %}
+          <button class="btn" style="background:#e0e0e0; color:#999; cursor:not-allowed;" disabled>
+            Indisponível
+          </button>
+        {% endif %}
+      </div>
+
+    </div>
+    {% empty %}
+    <div style="grid-column:1/-1; text-align:center; padding:60px 20px;">
+      <span style="font-size:4rem;">📦</span>
+      <p style="font-weight:800; font-size:1.1rem; margin-top:16px;">Nenhum produto encontrado.</p>
+      {% if user.is_staff %}
+        <a href="{% url 'admin:index' %}" class="btn btn-primary mt-2">Cadastrar Produtos</a>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+
+</div>
+{% endblock %}

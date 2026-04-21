@@ -1,90 +1,104 @@
-{% extends "farmacia/base.html" %}
+{% extends 'farmacia/base.html' %}
 {% load static %}
 
 {% block title %}Cadastro - FarmaTec{% endblock %}
+{% block category_bar %}{% endblock %}
 
 {% block content %}
-<div class="flex items-center justify-center min-h-[80vh] bg-white">
-    <div class="w-full max-w-md p-8 bg-white border border-gray-100 shadow-2xl rounded-2xl">
-        <div class="text-center mb-8">
-            <h1 class="text-3xl font-extrabold text-[#2563eb]">Crie sua conta</h1>
-            <p class="text-gray-500 mt-2">Junte-se à FarmaTec</p>
-        </div>
+<div style="min-height:calc(100vh - 64px); background:linear-gradient(135deg, #e6f3ff 0%, #f5f5f5 100%); display:flex; align-items:center; justify-content:center; padding:40px 16px;">
 
-        <form method="POST" action="{% url 'register' %}" id="registerForm" class="space-y-5">
-            {% csrf_token %}
-            
-            {% if form.errors %}
-                <div class="alert alert-error shadow-sm rounded-lg py-3 px-4 text-sm bg-red-50 border border-red-200 text-red-700">
-                    <div class="flex flex-col gap-1">
-                        {% for field, errors in form.errors.items %}
-                            {% for error in errors %}
-                                <div class="flex items-center gap-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                                    </svg>
-                                    <span>{{ error }}</span>
-                                </div>
-                            {% endfor %}
-                        {% endfor %}
-                    </div>
-                </div>
-            {% endif %}
-            
-            <div class="form-control w-full">
-                <label class="label pt-0" for="id_username">
-                    <span class="label-text font-semibold text-gray-700">Nome de usuário</span>
-                </label>
-                {{ form.username }}
-            </div>
-            
-            <div class="form-control w-full">
-                <label class="label pt-0" for="id_password1">
-                    <span class="label-text font-semibold text-gray-700">Senha</span>
-                </label>
-                {{ form.password1 }}
-            </div>
+  <div class="form-card" style="max-width:520px;">
 
-            <div class="form-control w-full">
-                <label class="label pt-0" for="id_password2">
-                    <span class="label-text font-semibold text-gray-700">Confirme a senha</span>
-                </label>
-                {{ form.password2 }}
-            </div>
-            
-            <button type="submit" class="btn w-full border-none bg-[#2563eb] hover:bg-[#1d4ed8] text-white font-bold h-12 rounded-xl transition-all shadow-lg hover:shadow-blue-200">
-                Registrar
-            </button>
-            
-            <p class="text-center text-sm text-gray-600 mt-4">
-                Já tem uma conta? 
-                <a href="{% url 'login' %}" class="text-[#2563eb] font-bold hover:underline">Faça Login</a>
-            </p>
-        </form>
-        
-        <div class="mt-10 pt-6 border-t border-gray-100 text-center">
-            <p class="text-[10px] text-gray-400 uppercase tracking-widest">
-                © 2026 FarmaTec. Saúde em primeiro lugar.
-            </p>
-        </div>
+    <!-- Logo -->
+    <div style="text-align:center; margin-bottom:24px;">
+      <a href="{% url 'home' %}" style="font-size:2rem; font-weight:900; color:var(--primary);">
+        Farma<span style="color:var(--accent);">Tec</span>
+      </a>
     </div>
-</div>
 
-<style>
-    /* Padronização dos campos do Django para o visual FarmaTec */
-    input {
-        width: 100%;
-        padding: 0.85rem 1rem;
-        border: 1px solid #e2e8f0;
-        border-radius: 0.75rem;
-        background-color: #f8fafc;
-        transition: all 0.2s ease-in-out;
-    }
-    input:focus {
-        outline: none;
-        border-color: #2563eb;
-        background-color: #ffffff;
-        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
-    }
-</style>
+    <h2>Criar sua conta</h2>
+    <p class="subtitle">Rápido e grátis! Aproveite descontos exclusivos 🎉</p>
+
+    <!-- Erros do form -->
+    {% if form.errors %}
+      <div class="alert alert-danger">
+        <i class="fa fa-exclamation-circle"></i>
+        Corrija os erros abaixo para continuar.
+      </div>
+    {% endif %}
+
+    <form method="POST" action="{% url 'register' %}">
+      {% csrf_token %}
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="first_name"><i class="fa fa-user"></i> Nome</label>
+          <input type="text" id="first_name" name="first_name" placeholder="Seu nome"
+            value="{{ form.first_name.value|default:'' }}" required/>
+          {% if form.first_name.errors %}
+            <span class="text-danger" style="font-size:0.8rem;">{{ form.first_name.errors.0 }}</span>
+          {% endif %}
+        </div>
+        <div class="form-group">
+          <label for="last_name"><i class="fa fa-user"></i> Sobrenome</label>
+          <input type="text" id="last_name" name="last_name" placeholder="Seu sobrenome"
+            value="{{ form.last_name.value|default:'' }}" required/>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="username"><i class="fa fa-at"></i> Usuário</label>
+        <input type="text" id="username" name="username" placeholder="Escolha um nome de usuário"
+          value="{{ form.username.value|default:'' }}" required autocomplete="username"/>
+        {% if form.username.errors %}
+          <span class="text-danger" style="font-size:0.8rem;">{{ form.username.errors.0 }}</span>
+        {% endif %}
+      </div>
+
+      <div class="form-group">
+        <label for="email"><i class="fa fa-envelope"></i> E-mail</label>
+        <input type="email" id="email" name="email" placeholder="seu@email.com"
+          value="{{ form.email.value|default:'' }}" required/>
+        {% if form.email.errors %}
+          <span class="text-danger" style="font-size:0.8rem;">{{ form.email.errors.0 }}</span>
+        {% endif %}
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="password1"><i class="fa fa-lock"></i> Senha</label>
+          <input type="password" id="password1" name="password1" placeholder="Crie uma senha forte" required autocomplete="new-password"/>
+          {% if form.password1.errors %}
+            <span class="text-danger" style="font-size:0.8rem;">{{ form.password1.errors.0 }}</span>
+          {% endif %}
+        </div>
+        <div class="form-group">
+          <label for="password2"><i class="fa fa-lock"></i> Confirmar Senha</label>
+          <input type="password" id="password2" name="password2" placeholder="Repita a senha" required autocomplete="new-password"/>
+          {% if form.password2.errors %}
+            <span class="text-danger" style="font-size:0.8rem;">{{ form.password2.errors.0 }}</span>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Dica de senha -->
+      <div class="alert alert-info" style="margin-bottom:18px;">
+        <i class="fa fa-info-circle"></i>
+        Sua senha deve ter pelo menos 8 caracteres e não pode ser muito comum.
+      </div>
+
+      <button type="submit" class="btn btn-accent btn-full btn-lg">
+        <i class="fa fa-user-plus"></i> Criar Conta Grátis
+      </button>
+    </form>
+
+    <div style="text-align:center; margin-top:20px; padding-top:18px; border-top:1px solid var(--border);">
+      <p style="font-size:0.9rem; color:var(--text-light); font-weight:600;">
+        Já tem uma conta?
+        <a href="{% url 'login' %}" style="color:var(--primary); font-weight:800;">Entrar →</a>
+      </p>
+    </div>
+
+  </div>
+</div>
 {% endblock %}

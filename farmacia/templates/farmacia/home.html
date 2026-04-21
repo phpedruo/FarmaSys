@@ -1,94 +1,180 @@
 {% extends 'farmacia/base.html' %}
 {% load static %}
 
+{% block title %}FarmaTec - Sua Saúde em Primeiro Lugar{% endblock %}
+
 {% block content %}
-<section style="position: relative; width: 100vw; margin-left: calc(-50vw + 50%); margin-top: -40px; height: 600px; display: flex; align-items: center; justify-content: center; text-align: center; background: url('{% static "img/farmacia-banner.jpg" %}') center/cover; background-position: center;">
-    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.4);"></div>
-    
-    <div style="max-width: 900px; position: relative; z-index: 1; padding: 0 20px;">
-        <h1 style="font-size: 3.5rem; font-weight: 700; color: #ffffff; margin-bottom: 20px; line-height: 1.2; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">
-            Sua Saúde em Primeiro Lugar,<br>FarmaTec Online
-        </h1>
-        <p style="font-size: 1.25rem; color: #ffffff; margin-bottom: 40px; text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">
-            Medicamentos e cuidados pessoais com entrega rápida ou retirada na loja.
-        </p>
-        
-        {# URL 'busca' comentada por ainda não existir #}
-        <a href="#" {# href="{% url 'busca' %}" #} style="display: inline-flex; align-items: center; gap: 10px; background-color: #f0834e; color: white; padding: 16px 40px; border-radius: 8px; font-size: 1.125rem; font-weight: 600; text-decoration: none; transition: all 0.3s; box-shadow: 0 4px 12px rgba(240, 131, 78, 0.3);">
-            Começar a Comprar
-            <svg xmlns="http://www.w3.org/2000/svg" style="width: 20px; height: 20px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-            </svg>
+
+<!-- ===== HERO BANNER ===== -->
+<section class="hero-banner">
+  <div class="container">
+    <div class="hero-content">
+      <h1>Sua Saúde em <span>Primeiro Lugar</span>, FarmaTec Online</h1>
+      <p>Medicamentos e cuidados pessoais com entrega rápida ou retirada na loja.</p>
+      <div class="d-flex gap-2">
+        <a href="{% url 'produtos' %}" class="btn btn-accent btn-lg">
+          <i class="fa fa-shopping-cart"></i> Começar a Comprar
         </a>
+        <a href="{% url 'promocoes' %}" class="btn btn-lg" style="background:rgba(255,255,255,0.2); color:#fff;">
+          🔥 Ver Ofertas
+        </a>
+      </div>
     </div>
+  </div>
 </section>
 
-<section style="padding: 80px 20px; background-color: #ffffff; width: 100vw; margin-left: calc(-50vw + 50%);">
-    </section>
-
-<section style="padding: 80px 20px; background-color: white;">
-    <div style="max-width: 1200px; margin: 0 auto;">
-        <div style="text-align: center; margin-bottom: 60px;">
-            <h2 style="font-size: 2.5rem; font-weight: 700; color: #1f2937; margin-bottom: 12px;">Medicamentos em Destaque</h2>
-            <p style="font-size: 1.125rem; color: #6b7280;">Os itens mais procurados em nossa farmácia</p>
-        </div>
-
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-bottom: 40px;">
-            {% for produto in produtos_destaque %}
-            <div style="background: white; border: 2px solid #e5e7eb; border-radius: 16px; overflow: hidden; transition: all 0.3s; box-shadow: 0 2px 8px rgba(0,0,0,0.05); position: relative;">
-                
-                <div style="height: 240px; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); display: flex; align-items: center; justify-content: center;">
-                    <svg xmlns="http://www.w3.org/2000/svg" style="width: 80px; height: 80px; color: white; opacity: 0.7;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
-                    </svg>
-                </div>
-                <div style="padding: 24px;">
-                    <h3 style="font-size: 1.25rem; font-weight: 600; color: #1f2937; margin-bottom: 8px;">{{ produto.nome }}</h3>
-                    <p style="font-size: 1.75rem; font-weight: 700; color: #2563eb; margin-bottom: 20px;">R$ {{ produto.preco|floatformat:2 }}</p>
-                    
-                    {# URL 'busca' comentada por ainda não existir #}
-                    <a href="#" {# href="{% url 'busca' %}" #} style="display: block; text-align: center; padding: 12px; background-color: #f3f4f6; color: #374151; border-radius: 8px; font-weight: 600; text-decoration: none;">
-                        Ver Detalhes
-                    </a>
-                </div>
-            </div>
-            {% empty %}
-            <p style="text-align: center; color: #6b7280; grid-column: 1 / -1;">Nenhum medicamento cadastrado ainda.</p>
-            {% endfor %}
-        </div>
+<!-- ===== CATEGORY ICONS ===== -->
+<section class="categories-section">
+  <div class="container">
+    <div class="category-icons">
+      <a href="{% url 'promocoes' %}" class="category-icon-item">
+        <div class="category-icon-circle">🔥</div>
+        <span class="category-icon-label">Ofertas do Dia</span>
+      </a>
+      <a href="{% url 'produtos' %}?categoria=Medicamentos" class="category-icon-item">
+        <div class="category-icon-circle">💊</div>
+        <span class="category-icon-label">Medicamentos</span>
+      </a>
+      <a href="{% url 'produtos' %}?categoria=Dermocosméticos" class="category-icon-item">
+        <div class="category-icon-circle">🧴</div>
+        <span class="category-icon-label">Dermocosméticos</span>
+      </a>
+      <a href="{% url 'produtos' %}?categoria=Suplementos" class="category-icon-item">
+        <div class="category-icon-circle">🌿</div>
+        <span class="category-icon-label">Suplementos</span>
+      </a>
+      <a href="{% url 'produtos' %}?categoria=Bebê" class="category-icon-item">
+        <div class="category-icon-circle">👶</div>
+        <span class="category-icon-label">Bebê & Mãe</span>
+      </a>
+      <a href="{% url 'produtos' %}?categoria=Saúde" class="category-icon-item">
+        <div class="category-icon-circle">🩺</div>
+        <span class="category-icon-label">Saúde</span>
+      </a>
+      <a href="{% url 'produtos' %}?categoria=Higiene" class="category-icon-item">
+        <div class="category-icon-circle">🪥</div>
+        <span class="category-icon-label">Higiene Pessoal</span>
+      </a>
+      <a href="{% url 'produtos' %}?categoria=Beleza" class="category-icon-item">
+        <div class="category-icon-circle">💆</div>
+        <span class="category-icon-label">Beleza</span>
+      </a>
     </div>
+  </div>
 </section>
 
-<footer style="background-color: #1f2937; color: white; padding: 60px 20px 30px; width: 100vw; margin-left: calc(-50vw + 50%); margin-bottom: 0;">
-    <div style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; margin-bottom: 40px;">
-            <div>
-                <h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 16px;">FarmaTec</h3>
-                <p style="color: #9ca3af; font-size: 0.95rem; line-height: 1.6;">Cuidando da sua saúde com tecnologia e rapidez.</p>
-            </div>
-
-            <div>
-                <h4 style="font-size: 1rem; font-weight: 600; margin-bottom: 16px;">Navegação</h4>
-                <ul style="list-style: none; padding: 0; margin: 0;">
-                    <li style="margin-bottom: 12px;"><a href="{% url 'home' %}" style="color: #9ca3af; text-decoration: none;">Home</a></li>
-                    
-                    {# URLs de busca e gerenciar lojas comentadas #}
-                    <li style="margin-bottom: 12px;"><a href="#" {# href="{% url 'busca' %}" #} style="color: #9ca3af; text-decoration: none;">Produtos</a></li>
-                    {% if user.is_superuser %}
-                        <li style="margin-bottom: 12px;"><a href="#" {# href="{% url 'gerenciar_lojas' %}" #} style="color: #9ca3af; text-decoration: none;">Gerenciar Lojas</a></li>
-                    {% endif %}
-                </ul>
-            </div>
-
-            <div>
-                <h4 style="font-size: 1rem; font-weight: 600; margin-bottom: 16px;">Suporte</h4>
-                <ul style="list-style: none; padding: 0; margin: 0;">
-                    {# URLs de termos e política comentadas #}
-                    <li style="margin-bottom: 12px;"><a href="#" {# href="{% url 'politica_privacidade' %}" #} style="color: #9ca3af; text-decoration: none;">Privacidade</a></li>
-                    <li style="margin-bottom: 12px;"><a href="#" {# href="{% url 'termos_uso' %}" #} style="color: #9ca3af; text-decoration: none;">Termos de Uso</a></li>
-                </ul>
-            </div>
+<!-- ===== PROMO BANNER ===== -->
+{% if promocoes %}
+<section style="background:#fff3ec; padding:20px 0; border-top:1px solid #ffe0cc; border-bottom:1px solid #ffe0cc;">
+  <div class="container">
+    <div class="d-flex align-center justify-between">
+      <div class="d-flex align-center gap-2">
+        <span style="font-size:2rem;">⏰</span>
+        <div>
+          <p style="font-weight:900; font-size:1.05rem; color:#e05800;">Produtos próximos do vencimento com 20% de desconto!</p>
+          <p style="font-size:0.88rem; color:#777; font-weight:600;">Qualidade garantida, preço imbatível</p>
         </div>
+      </div>
+      <a href="{% url 'promocoes' %}" class="btn btn-accent">Ver Todas as Ofertas →</a>
     </div>
-</footer>
+  </div>
+</section>
+{% endif %}
+
+<!-- ===== PRODUTOS ===== -->
+<section style="padding: 40px 0;">
+  <div class="container">
+
+    {% if promocoes %}
+    <div class="section-title">
+      <h2>🔥 Promoções Relâmpago</h2>
+      <a href="{% url 'promocoes' %}">Ver todas →</a>
+    </div>
+    <div class="product-grid mb-4">
+      {% for produto in promocoes %}
+      <div class="product-card">
+        <span class="badge-expiring">Vence em breve</span>
+        <span class="badge-discount">-20%</span>
+        <div class="product-card-img">
+          <span style="font-size:3.5rem;">💊</span>
+        </div>
+        <div class="product-card-body">
+          <p class="product-card-name">{{ produto.nome }}</p>
+          <p class="product-old-price">De R$ {{ produto.preco }}</p>
+          <p class="product-card-price" style="color:var(--accent);">R$ {{ produto.preco_com_desconto }}</p>
+          <p class="product-card-installment">Vence: {{ produto.dataValidade|date:"d/m/Y" }}</p>
+        </div>
+        <div class="product-card-footer">
+          <a href="#" class="btn btn-accent">Comprar Agora</a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="section-title">
+      <h2>Tem na FarmaTec!</h2>
+      <a href="{% url 'produtos' %}">Ver todos →</a>
+    </div>
+    <div class="product-grid">
+      {% for produto in produtos %}
+      <div class="product-card">
+        <div class="product-card-img">
+          <span style="font-size:3.5rem;">💊</span>
+        </div>
+        <div class="product-card-body">
+          <p class="product-card-name">{{ produto.nome }}</p>
+          <p style="font-size:0.78rem; color:var(--text-light); font-weight:600;">{{ produto.categoria }}</p>
+          <p class="product-card-price">R$ {{ produto.preco }}</p>
+          <div class="product-card-rating">
+            <span class="stars">★★★★★</span>
+            <span style="color:#777;">4.9</span>
+          </div>
+        </div>
+        <div class="product-card-footer">
+          <a href="{% url 'produtos' %}" class="btn btn-primary">Ver Produto</a>
+        </div>
+      </div>
+      {% empty %}
+      <div style="grid-column:1/-1; text-align:center; padding:40px; color:#777;">
+        <span style="font-size:3rem;">📦</span>
+        <p style="font-weight:700; margin-top:12px;">Nenhum produto cadastrado ainda.</p>
+        {% if user.is_staff %}
+          <a href="{% url 'admin:index' %}" class="btn btn-primary mt-2">Cadastrar Produtos</a>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+
+  </div>
+</section>
+
+<!-- ===== INFO STRIP ===== -->
+<section style="background:var(--primary); padding:28px 0; margin-top:40px;">
+  <div class="container">
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:24px;">
+      <div style="text-align:center; color:#fff;">
+        <div style="font-size:2rem; margin-bottom:6px;">🚚</div>
+        <p style="font-weight:900; font-size:0.95rem;">Entrega Rápida</p>
+        <p style="font-size:0.82rem; opacity:0.8; font-weight:600;">Receba em casa</p>
+      </div>
+      <div style="text-align:center; color:#fff;">
+        <div style="font-size:2rem; margin-bottom:6px;">🏪</div>
+        <p style="font-weight:900; font-size:0.95rem;">Retire na Loja</p>
+        <p style="font-size:0.82rem; opacity:0.8; font-weight:600;">Sem taxa adicional</p>
+      </div>
+      <div style="text-align:center; color:#fff;">
+        <div style="font-size:2rem; margin-bottom:6px;">🛡️</div>
+        <p style="font-weight:900; font-size:0.95rem;">Compra Segura</p>
+        <p style="font-size:0.82rem; opacity:0.8; font-weight:600;">Dados protegidos</p>
+      </div>
+      <div style="text-align:center; color:#fff;">
+        <div style="font-size:2rem; margin-bottom:6px;">💳</div>
+        <p style="font-weight:900; font-size:0.95rem;">Parcelamento</p>
+        <p style="font-size:0.82rem; opacity:0.8; font-weight:600;">Em até 10x sem juros</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 {% endblock %}
