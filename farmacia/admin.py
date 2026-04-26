@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Produto, Loja, Pedido, ItemPedido, Estoque
+from .models import Produto, Loja, Pedido, ItemPedido, Estoque, CarrinhoProduto
 
 # 1. Configuração do Produto (Com a lógica de alerta)
 @admin.register(Produto)
@@ -19,3 +19,10 @@ admin.site.register(Loja)
 admin.site.register(Pedido)
 admin.site.register(ItemPedido)
 admin.site.register(Estoque)
+
+
+@admin.register(CarrinhoProduto)
+class CarrinhoProdutoAdmin(admin.ModelAdmin):
+    list_display = ('usuario', 'produto', 'quantidade', 'data_adicionado')
+    list_filter = ('data_adicionado', 'usuario')
+    search_fields = ('usuario__username', 'produto__nome')

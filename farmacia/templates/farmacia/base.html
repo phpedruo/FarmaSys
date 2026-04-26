@@ -1,119 +1,155 @@
-<!DOCTYPE html>
+<!doctype html>
 {% load static %}
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>{% block title %}FarmaTec Online{% endblock %}</title>
-  <link rel="stylesheet" href="{% static 'css/global.css' %}?=1.2"/>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
-  {% block extra_css %}{% endblock %}
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}FarmaTec Online{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/global.css' %}?=1.2" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    {% block extra_css %}{% endblock %}
+  </head>
+  <body>
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar">
+      <div class="navbar-inner">
+        <a href="{% url 'home' %}" class="navbar-brand"
+          >Farma<span>Tec</span></a
+        >
 
-  <!-- ===== NAVBAR ===== -->
-  <nav class="navbar">
-    <div class="navbar-inner">
-      <a href="{% url 'home' %}" class="navbar-brand">Farma<span>Tec</span></a>
+        <div class="navbar-links">
+          <a href="{% url 'home' %}"
+            ><i class="fa fa-home"></i> <span>Início</span></a
+          >
+          <a href="{% url 'produtos' %}"
+            ><i class="fa fa-pills"></i> <span>Produtos</span></a
+          >
+          <a href="{% url 'promocoes' %}" class="nav-offers">🔥 Ofertas</a>
 
-      <div class="navbar-links">
-        <a href="{% url 'home' %}"><i class="fa fa-home"></i> <span>Início</span></a>
-        <a href="{% url 'produtos' %}"><i class="fa fa-pills"></i> <span>Produtos</span></a>
-        <a href="{% url 'promocoes' %}" class="nav-offers">🔥 Ofertas</a>
-
-        {% if user.is_authenticated %}
+          {% if user.is_authenticated %}
+          <a href="{% url 'meus_pedidos' %}"
+            ><i class="fa fa-clock-rotate-left"></i>
+            <span>Meus Pedidos</span></a
+          >
+          <a href="{% url 'carrinho' %}"
+            ><i class="fa fa-shopping-cart"></i> <span>Carrinho</span></a
+          >
           {% if user.is_staff %}
-            <a href="{% url 'consulta_estoque' %}"><i class="fa fa-boxes"></i> <span>Estoque</span></a>
-            <a href="{% url 'admin:index' %}"><i class="fa fa-cog"></i> <span>Admin</span></a>
+          <a href="{% url 'consulta_estoque' %}"
+            ><i class="fa fa-boxes"></i> <span>Estoque</span></a
+          >
+          <a href="{% url 'admin:index' %}"
+            ><i class="fa fa-cog"></i> <span>Admin</span></a
+          >
           {% endif %}
-          <a href="{% url 'logout' %}"><i class="fa fa-sign-out-alt"></i> <span>Sair</span></a>
-        {% else %}
-          <a href="{% url 'login' %}"><i class="fa fa-user"></i> <span>Entrar</span></a>
-          <a href="{% url 'register' %}" style="background:rgba(255,255,255,0.15); border-radius:8px;">
+          <a href="{% url 'logout' %}"
+            ><i class="fa fa-sign-out-alt"></i> <span>Sair</span></a
+          >
+          {% else %}
+          <a href="{% url 'login' %}"
+            ><i class="fa fa-user"></i> <span>Entrar</span></a
+          >
+          <a
+            href="{% url 'register' %}"
+            style="background: rgba(255, 255, 255, 0.15); border-radius: 8px"
+          >
             <i class="fa fa-user-plus"></i> <span>Cadastrar</span>
           </a>
-        {% endif %}
+          {% endif %}
+        </div>
+      </div>
+    </nav>
+
+    <!-- ===== CATEGORY BAR ===== -->
+    {% block category_bar %}
+    <div class="category-bar">
+      <div class="category-bar-inner">
+        <a href="{% url 'promocoes' %}">🔥 Ofertas do Dia</a>
+        <a href="#">💊 Medicamentos</a>
+        <a href="#">🧴 Dermocosméticos</a>
+        <a href="#">🌿 Suplementos</a>
+        <a href="#">👶 Bebê & Mãe</a>
+        <a href="#">🩺 Saúde</a>
+        <a href="#">🪥 Higiene Pessoal</a>
+        <a href="#">💆 Beleza</a>
       </div>
     </div>
-  </nav>
+    {% endblock %}
 
-  <!-- ===== CATEGORY BAR ===== -->
-  {% block category_bar %}
-  <div class="category-bar">
-    <div class="category-bar-inner">
-      <a href="{% url 'promocoes' %}">🔥 Ofertas do Dia</a>
-      <a href="#">💊 Medicamentos</a>
-      <a href="#">🧴 Dermocosméticos</a>
-      <a href="#">🌿 Suplementos</a>
-      <a href="#">👶 Bebê & Mãe</a>
-      <a href="#">🩺 Saúde</a>
-      <a href="#">🪥 Higiene Pessoal</a>
-      <a href="#">💆 Beleza</a>
-    </div>
-  </div>
-  {% endblock %}
-
-  <!-- ===== MESSAGES ===== -->
-  {% if messages %}
-  <div class="container mt-2">
-    {% for msg in messages %}
+    <!-- ===== MESSAGES ===== -->
+    {% if messages %}
+    <div class="container mt-2">
+      {% for msg in messages %}
       <div class="alert alert-{{ msg.tags }}">
         <i class="fa fa-info-circle"></i> {{ msg }}
       </div>
-    {% endfor %}
-  </div>
-  {% endif %}
+      {% endfor %}
+    </div>
+    {% endif %}
 
-  <!-- ===== MAIN CONTENT ===== -->
-  <main>
-    {% block content %}{% endblock %}
-  </main>
+    <!-- ===== MAIN CONTENT ===== -->
+    <main>{% block content %}{% endblock %}</main>
 
-  <!-- ===== FOOTER ===== -->
-  <footer class="footer">
-    <div class="container">
-      <div class="footer-grid">
-        <div>
-          <div class="footer-brand">Farma<span>Tec</span></div>
-          <p>Medicamentos e cuidados pessoais com entrega rápida ou retirada na loja.</p>
-          <div class="d-flex gap-1 mt-2">
-            <a href="#" style="color:#ffd700;font-size:1.2rem;"><i class="fab fa-instagram"></i></a>
-            <a href="#" style="color:#ffd700;font-size:1.2rem;"><i class="fab fa-facebook"></i></a>
-            <a href="#" style="color:#ffd700;font-size:1.2rem;"><i class="fab fa-whatsapp"></i></a>
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-grid">
+          <div>
+            <div class="footer-brand">Farma<span>Tec</span></div>
+            <p>
+              Medicamentos e cuidados pessoais com entrega rápida ou retirada na
+              loja.
+            </p>
+            <div class="d-flex gap-1 mt-2">
+              <a href="#" style="color: #ffd700; font-size: 1.2rem"
+                ><i class="fab fa-instagram"></i
+              ></a>
+              <a href="#" style="color: #ffd700; font-size: 1.2rem"
+                ><i class="fab fa-facebook"></i
+              ></a>
+              <a href="#" style="color: #ffd700; font-size: 1.2rem"
+                ><i class="fab fa-whatsapp"></i
+              ></a>
+            </div>
+          </div>
+          <div>
+            <h4>Atendimento</h4>
+            <ul>
+              <li><a href="#">Central de Ajuda</a></li>
+              <li><a href="#">Fale Conosco</a></li>
+              <li><a href="#">Ouvidoria</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4>Institucional</h4>
+            <ul>
+              <li><a href="#">Sobre nós</a></li>
+              <li><a href="#">Trabalhe conosco</a></li>
+              <li><a href="#">Política de Privacidade</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4>Minha Conta</h4>
+            <ul>
+              <li><a href="{% url 'login' %}">Login</a></li>
+              <li><a href="{% url 'register' %}">Cadastro</a></li>
+              <li><a href="{% url 'promocoes' %}">Promoções</a></li>
+            </ul>
           </div>
         </div>
-        <div>
-          <h4>Atendimento</h4>
-          <ul>
-            <li><a href="#">Central de Ajuda</a></li>
-            <li><a href="#">Fale Conosco</a></li>
-            <li><a href="#">Ouvidoria</a></li>
-          </ul>
-        </div>
-        <div>
-          <h4>Institucional</h4>
-          <ul>
-            <li><a href="#">Sobre nós</a></li>
-            <li><a href="#">Trabalhe conosco</a></li>
-            <li><a href="#">Política de Privacidade</a></li>
-          </ul>
-        </div>
-        <div>
-          <h4>Minha Conta</h4>
-          <ul>
-            <li><a href="{% url 'login' %}">Login</a></li>
-            <li><a href="{% url 'register' %}">Cadastro</a></li>
-            <li><a href="{% url 'promocoes' %}">Promoções</a></li>
-          </ul>
+        <div class="footer-bottom">
+          <p>
+            © 2026 FarmaTec Online. Todos os direitos reservados. CNPJ:
+            00.000.000/0001-00
+          </p>
         </div>
       </div>
-      <div class="footer-bottom">
-        <p>© 2026 FarmaTec Online. Todos os direitos reservados. CNPJ: 00.000.000/0001-00</p>
-      </div>
-    </div>
-  </footer>
+    </footer>
 
-  {% block extra_js %}{% endblock %}
-</body>
+    {% block extra_js %}{% endblock %}
+  </body>
 </html>

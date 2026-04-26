@@ -106,6 +106,23 @@ class ItemPedido(models.Model):
     
     def calcular_subtotal(self):
         return self.preco_unitario * self.quantidade
+
+
+class CarrinhoProduto(models.Model):
+    usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='itens_carrinho')
+    produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
+    quantidade = models.PositiveIntegerField(validators=[MinValueValidator(1)])
+    data_adicionado = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('usuario', 'produto')
+        ordering = ['-data_adicionado']
+
+    def __str__(self):
+        return f"{self.usuario.username}: {self.quantidade}x {self.produto.nome}"
+
+    def calcular_subtotal(self):
+        return self.produto.preco * self.quantidade
     
 class Estoque(models.Model):
     ESTOQUE_MINIMO_PADRAO = 30

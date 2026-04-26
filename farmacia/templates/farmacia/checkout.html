@@ -1,0 +1,54 @@
+{% extends 'farmacia/base.html' %} {% block content %}
+<div class="page-header">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="{% url 'home' %}">Inicio</a>
+      <span>/</span>
+      <a href="{% url 'carrinho' %}">Carrinho</a>
+      <span>/</span>
+      <span>Checkout</span>
+    </div>
+    <h1><i class="fa fa-credit-card"></i> Checkout</h1>
+    <p>Escolha a loja para retirada e confirme seu pedido.</p>
+  </div>
+</div>
+
+<div class="container checkout-layout" style="padding-bottom: 60px">
+  <div class="checkout-form-card">
+    <h2>Dados para retirada</h2>
+    <form method="post" action="{% url 'checkout' %}">
+      {% csrf_token %}
+      <div class="form-group">
+        <label for="id_loja">Loja para retirada</label>
+        {{ form.loja }} {% if form.loja.errors %}
+        <span class="text-danger">{{ form.loja.errors.0 }}</span>
+        {% endif %}
+      </div>
+      <button type="submit" class="btn btn-accent btn-full">
+        <i class="fa fa-check"></i> Confirmar pedido
+      </button>
+    </form>
+  </div>
+
+  <div class="checkout-summary-card">
+    <h2>Resumo</h2>
+    <ul class="checkout-items">
+      {% for item in itens %}
+      <li>
+        <span>{{ item.quantidade }}x {{ item.produto.nome }}</span>
+        <strong>R$ {{ item.calcular_subtotal|floatformat:2 }}</strong>
+      </li>
+      {% endfor %}
+    </ul>
+
+    <div class="checkout-total">
+      <p>Total final</p>
+      <strong>R$ {{ total|floatformat:2 }}</strong>
+    </div>
+
+    <a href="{% url 'carrinho' %}" class="btn btn-outline btn-full"
+      >Voltar ao carrinho</a
+    >
+  </div>
+</div>
+{% endblock %}
