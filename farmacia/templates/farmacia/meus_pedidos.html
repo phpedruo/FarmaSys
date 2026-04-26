@@ -1,0 +1,95 @@
+{% extends 'farmacia/base.html' %} {% block content %}
+<div class="page-header">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="{% url 'home' %}">Inicio</a>
+      <span>/</span>
+      <span>Meus Pedidos</span>
+    </div>
+    <div class="d-flex align-center justify-between">
+      <div>
+        <h1><i class="fa fa-clock-rotate-left"></i> Meus Pedidos</h1>
+        <p>Acompanhe seus pedidos anteriores e repita compras com um clique.</p>
+      </div>
+      <a href="{% url 'produtos' %}" class="btn btn-primary">
+        <i class="fa fa-pills"></i> Ver Produtos
+      </a>
+    </div>
+  </div>
+</div>
+
+<div class="container" style="padding-bottom: 60px">
+  <div class="order-filters mb-3">
+    <a
+      href="{% url 'meus_pedidos' %}"
+      class="{% if not status_ativo %}active{% endif %}"
+      >Todos</a
+    >
+    {% for code, label in status_choices %}
+    <a
+      href="{% url 'meus_pedidos' %}?status={{ code }}"
+      class="{% if status_ativo == code %}active{% endif %}"
+      >{{ label }}</a
+    >
+    {% endfor %}
+  </div>
+
+  {% if pedidos %}
+  <div class="table-wrapper">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Pedido</th>
+          <th>Data</th>
+          <th>Loja</th>
+          <th>Itens</th>
+          <th>Total</th>
+          <th>Status</th>
+          <th>Acoes</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for pedido in pedidos %}
+        <tr>
+          <td>#{{ pedido.id }}</td>
+          <td>{{ pedido.data_criacao|date:'d/m/Y H:i' }}</td>
+          <td>{{ pedido.loja.nome }}</td>
+          <td>{{ pedido.itens.count }}</td>
+          <td>R$ {{ pedido.calcular_total|floatformat:2 }}</td>
+          <td>
+            <span class="status-chip status-{{ pedido.status|lower }}"
+              >{{ pedido.get_status_display }}</span
+            >
+          </td>
+          <td>
+            <div class="d-flex gap-1">
+              <a
+                href="{% url 'detalhe_pedido' pedido.id %}"
+                class="btn btn-sm btn-outline"
+                >Detalhes</a
+              >
+              <form method="post" action="{% url 'repetir_compra' pedido.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-accent">
+                  Repetir
+                </button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty-panel">
+    <span style="font-size: 3.5rem">🧾</span>
+    <h3>Voce ainda nao possui pedidos.</h3>
+    <p>
+      Quando finalizar uma compra, ela aparecera aqui para consulta e recompra.
+    </p>
+    <a href="{% url 'produtos' %}" class="btn btn-primary">Comecar compra</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
