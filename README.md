@@ -143,11 +143,9 @@ O **FarmaTec** é um Sistema web para gerenciamento de medicamentos, controle de
 **Intrução de acesso:** Ao acessar o sistema com o link acima, insira essas informações:|user:admin|senha:admin@123|
 
 ### 🎥 Apresentação
-- **Screencast das Novas Historias do Usuários**
-  
-- **Screencast dos Testes Automatizados**
-  
-### 📋 Documentação
+- **Screencast das Novas Historias do Usuários***
+
+  [Link para terceiro screencas](https://youtu.be/a6Wu_C-_fHQ?si=FBsM00NTKooL2NM3)
 - **Relatório de Programação em Par 3**
   
   [📄 Link para o relatório](https://docs.google.com/document/d/1nrI-Gh9Ewjh2qyL0VqIhPDLBWp4PZearCMu3cJqklTM/edit?usp=drivesdk)
