@@ -146,6 +146,10 @@ O **FarmaTec** é um Sistema web para gerenciamento de medicamentos, controle de
 - **Screencast das Novas Historias do Usuários**
 
   [Link para terceiro screencast](https://youtu.be/a6Wu_C-_fHQ?si=FBsM00NTKooL2NM3)
+
+- **Screencast Test do Programa**
+
+  [Link para screencast de teste] 
 - **Relatório de Programação em Par 3**
   
   [📄 Link para o relatório](https://docs.google.com/document/d/1nrI-Gh9Ewjh2qyL0VqIhPDLBWp4PZearCMu3cJqklTM/edit?usp=drivesdk)
