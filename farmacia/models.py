@@ -66,8 +66,7 @@ class Produto(models.Model):
     
     @property
     def preco_com_desconto(self):
-        valor = float(self.preco) * 0.8
-        return f"{valor:.2f}"
+       return self.preco * Decimal('0.80')
     
     def obterPrecoPorQuantidade(self, quantidade):
         if quantidade >=10:
@@ -121,7 +120,20 @@ class CarrinhoProduto(models.Model):
     produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
     quantidade = models.PositiveIntegerField(validators=[MinValueValidator(1)])
     data_adicionado = models.DateTimeField(auto_now_add=True)
+    
+    @property
+    def faltam_para_5(self):
+        return max(0, 5 - self.quantidade)
 
+    @property
+    def faltam_para_10(self):
+        return max(0, 10 - self.quantidade)
+    
+    @property
+    def faltam_para_3(self):
+        # Retorna a diferença para a primeira faixa de 5%
+        return max(0, 3 - self.quantidade)
+     
     class Meta:
         unique_together = ('usuario', 'produto')
         ordering = ['-data_adicionado']
