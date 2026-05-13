@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Produto, Loja, Pedido, ItemPedido, Estoque, CarrinhoProduto
+from .models import Produto, Loja, Pedido, ItemPedido, Estoque, CarrinhoProduto, Lote
 
 # 1. Configuração do Produto (Com a lógica de alerta)
 @admin.register(Produto)

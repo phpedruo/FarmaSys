@@ -1,9 +1,12 @@
+# Adicione este import no topo
+import csv
+from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.db import transaction
-from .models import Produto, Estoque, Loja, Pedido, ItemPedido, CarrinhoProduto
+from .models import Produto, Estoque, Loja, Pedido, ItemPedido, CarrinhoProduto, Lote
 from .forms import AdicionarCarrinhoForm, AtualizarCarrinhoForm, CheckoutForm
 from django.utils import timezone
 from datetime import timedelta
@@ -235,6 +238,7 @@ def checkout(request):
                     produto=item.produto,
                     quantidade=item.quantidade,
                     preco_unitario=item.produto.preco,
+                    lote=estoque.lote,
                 )
 
                 estoque = Estoque.objects.select_for_update().get(produto=item.produto, loja=loja)
@@ -297,3 +301,71 @@ def repetir_compra(request, pedido_id):
         messages.info(request, 'Nao ha itens para repetir neste pedido.')
 
     return redirect('carrinho')
+
+# NOVAS funções — adicione ao final do arquivo
+
+@login_required
+@user_passes_test(is_staff)
+def rastrear_lote(request):
+    resultado = None
+    vendas = []
+    lote = None
+    mensagem = None
+
+    if request.method == 'POST':
+        numero_lote = request.POST.get('numero_lote', '').strip()
+
+        try:
+            lote = Lote.objects.get(numero_lote=numero_lote)
+            vendas = ItemPedido.objects.filter(lote=lote).select_related(
+                'pedido__usuario', 'pedido__loja'
+            ).order_by('-pedido__data_criacao')
+
+            if vendas.exists():
+                resultado = 'com_vendas'
+            else:
+                estoque = Estoque.objects.filter(lote=lote).first()
+                qtd = estoque.quantidade if estoque else 0
+                resultado = 'sem_vendas'
+                mensagem = (
+                    f"Nenhuma venda vinculada a este lote foi encontrada. "
+                    f"O estoque atual deste lote é de {qtd} unidades."
+                )
+
+        except Lote.DoesNotExist:
+            resultado = 'nao_encontrado'
+            mensagem = "Lote não encontrado. Verifique o número informado."
+
+    return render(request, 'farmacia/rastrear_lote.html', {
+        'resultado': resultado,
+        'vendas': vendas,
+        'lote': lote,
+        'mensagem': mensagem,
+    })
+
+
+@login_required
+@user_passes_test(is_staff)
+def exportar_contatos(request, numero_lote):
+    try:
+        lote = Lote.objects.get(numero_lote=numero_lote)
+    except Lote.DoesNotExist:
+        return HttpResponse("Lote não encontrado.", status=404)
+
+    vendas = ItemPedido.objects.filter(lote=lote).select_related('pedido__usuario')
+
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = f'attachment; filename="recall_{numero_lote}.csv"'
+    response.write('\ufeff')  # BOM para abrir corretamente no Excel
+
+    writer = csv.writer(response)
+    writer.writerow(['Usuário', 'Data da Venda', 'Quantidade'])
+
+    for item in vendas:
+        writer.writerow([
+            item.pedido.usuario.username,
+            item.pedido.data_criacao.strftime('%d/%m/%Y'),
+            item.quantidade,
+        ])
+
+    return response

@@ -93,6 +93,14 @@ class Pedido(models.Model):
         total = sum(item.calcular_subtotal() for item in self.itens.all())
         return total
     
+class Lote(models.Model):
+    numero_lote = models.CharField(max_length=50, unique=True)
+    produto = models.ForeignKey(Produto, on_delete=models.CASCADE, related_name='lotes')
+    fabricante = models.CharField(max_length=200)
+    quantidade_inicial = models.PositiveIntegerField()
+
+    def __str__(self):
+        return f"Lote {self.numero_lote} - {self.produto.nome}"
 
 class ItemPedido(models.Model):
     """Item de um pedido - cópia dos produtos do carrinho no momento da compra"""
@@ -100,6 +108,7 @@ class ItemPedido(models.Model):
     produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
     quantidade = models.PositiveIntegerField()
     preco_unitario = models.DecimalField(max_digits=10, decimal_places=2)  # Preço no momento da compra
+    lote = models.ForeignKey('Lote', on_delete=models.SET_NULL, null=True, blank=True) 
     
     def __str__(self):
         return f"{self.quantidade}x {self.produto.nome} (Pedido #{self.pedido.id})"
@@ -130,6 +139,7 @@ class Estoque(models.Model):
     produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
     loja = models.ForeignKey(Loja, on_delete=models.CASCADE) 
     quantidade = models.PositiveIntegerField()
+    lote = models.ForeignKey('Lote', on_delete=models.SET_NULL, null=True, blank=True)
     data_ultima_atualizacao = models.DateTimeField(auto_now=True)
 
     class Meta:
