@@ -10,6 +10,7 @@ from .models import Produto, Estoque, Loja, Pedido, ItemPedido, CarrinhoProduto,
 from .forms import AdicionarCarrinhoForm, AtualizarCarrinhoForm, CheckoutForm
 from django.utils import timezone
 from datetime import timedelta
+from decimal import Decimal
 
 
 def is_staff(user):
@@ -239,6 +240,7 @@ def checkout(request):
                     quantidade=item.quantidade,
                     preco_unitario=item.produto.preco,
                     lote=estoque.lote,
+                    preco_unitario= item.produto.obterPrecoPorQuantidade(item.quantidade),
                 )
 
                 estoque = Estoque.objects.select_for_update().get(produto=item.produto, loja=loja)

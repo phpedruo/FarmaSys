@@ -5,7 +5,7 @@ from django.utils import timezone
 from datetime import timedelta
 import time
 from .models import Produto, Estoque, Loja, Pedido, ItemPedido, CarrinhoProduto
-
+from decimal import Decimal
 User = get_user_model()
 
 
@@ -17,7 +17,7 @@ class Teste_01_PaginaInicial(TestCase):
 
     def setUp(self):
         self.client = Client()
-        self.url = reverse('pagina_inicial')
+        self.url = reverse('home')
         self.hoje = timezone.now().date()
 
     def tearDown(self):
@@ -36,30 +36,66 @@ class Teste_01_PaginaInicial(TestCase):
     def test_03_deve_exibir_promocoes_com_vencimento_em_30_dias(self):
         """Verifica se produtos vencendo em 30 dias aparecem como promoções."""
         prazo = self.hoje + timedelta(days=15)
-        Produto.objects.create(nome="Produto Promo", dataValidade=prazo, preco=10.00)
+        Produto.objects.create(
+            nome="Produto Promo", codigo="PROMO-001",
+            descricao="Produto promocional teste", categoria="Geral",
+            preco_custo=Decimal("3.00"), preco=Decimal("10.00"),
+            unidade_medida="unidade", dataValidade=prazo
+        )
         response = self.client.get(self.url)
         self.assertIn('promocoes', response.context)
         self.assertEqual(len(response.context['promocoes']), 1)
 
     def test_04_deve_exibir_produtos_sem_vencimento_proximo(self):
         """Verifica se produtos sem vencimento próximo aparecem nos destaques."""
-        prazo_longe = self.hoje + timedelta(days=90)
-        Produto.objects.create(nome="Produto Destaque", dataValidade=prazo_longe, preco=20.00)
+        prazo = self.hoje + timedelta(days=90)
+        Produto.objects.create(
+           nome="Produto Promo", codigo="PROMO-001",
+           descricao="Produto promocional teste", categoria="Geral",
+           preco_custo=Decimal("3.00"), preco=Decimal("10.00"),
+           unidade_medida="unidade", dataValidade=prazo
+        )
         response = self.client.get(self.url)
         self.assertIn('produtos', response.context)
         self.assertEqual(len(response.context['produtos']), 1)
 
     def test_05_deve_separar_promocoes_dos_destaques(self):
         """Verifica se promoções e destaques não se misturam."""
-        Produto.objects.create(nome="Promo", dataValidade=self.hoje + timedelta(days=10), preco=5.00)
-        Produto.objects.create(nome="Destaque", dataValidade=self.hoje + timedelta(days=60), preco=8.00)
+        # 1. Criamos um produto que VAI ser promoção (vencimento em 10 dias)
+        # Usamos códigos e descrições ÚNICOS para não dar erro de Integrity
+        Produto.objects.create(
+            nome="Produto Promo Real", 
+            codigo="UNIQUE-P-001", 
+            descricao="Descrição Única Promo",
+            categoria="Geral",
+            preco_custo=Decimal("3.00"), 
+            preco=Decimal("10.00"),
+            unidade_medida="unidade", 
+            dataValidade=self.hoje + timedelta(days=10)
+        )
+
+        # 2. Criamos um produto que NÃO vai ser promoção (vencimento em 60 dias)
+        Produto.objects.create(
+            nome="Produto Destaque Real", 
+            codigo="UNIQUE-D-001", 
+            descricao="Descrição Única Destaque",
+            categoria="Geral",
+            preco_custo=Decimal("5.00"), 
+            preco=Decimal("15.00"),
+            unidade_medida="unidade", 
+            dataValidade=self.hoje + timedelta(days=60)
+        )
+
         response = self.client.get(self.url)
+        
+        # Pegamos as listas de nomes do contexto
         nomes_promocoes = [p.nome for p in response.context['promocoes']]
         nomes_destaques = [p.nome for p in response.context['produtos']]
-        self.assertIn("Promo", nomes_promocoes)
-        self.assertNotIn("Promo", nomes_destaques)
-        self.assertIn("Destaque", nomes_destaques)
 
+        # Verificações
+        self.assertIn("Produto Promo Real", nomes_promocoes)
+        self.assertNotIn("Produto Promo Real", nomes_destaques)
+        self.assertIn("Produto Destaque Real", nomes_destaques)
 
 # ==============================================================================
 # CLASSE 02 - Testes da Página de Produtos
@@ -71,8 +107,26 @@ class Teste_02_PaginaProdutos(TestCase):
         self.client = Client()
         self.url = reverse('produtos')
         self.hoje = timezone.now().date()
-        Produto.objects.create(nome="Dipirona", categoria="analgesico", preco=5.00, dataValidade=self.hoje + timedelta(days=60))
-        Produto.objects.create(nome="Amoxicilina", categoria="antibiotico", preco=15.00, dataValidade=self.hoje + timedelta(days=60))
+        Produto.objects.create(
+            nome="Dipirona",
+            codigo="DIP-001", 
+            descricao="Dipirona 500mg",
+            categoria="analgesico", 
+            preco_custo=Decimal("2.00"), 
+            preco=Decimal("5.00"),
+            unidade_medida="caixa", 
+            dataValidade=self.hoje + timedelta(days=60)
+        )
+        Produto.objects.create(
+            nome="Amoxicilina", 
+            codigo="AMO-001", 
+            descricao="Amoxicilina 500mg",
+            categoria="antibiotico", 
+            preco_custo=Decimal("8.00"), preco=Decimal("15.00"),
+            unidade_medida="caixa", 
+            dataValidade=self.hoje + timedelta(days=60)
+        
+        )
 
     def tearDown(self):
         time.sleep(0)
@@ -115,7 +169,7 @@ class Teste_03_PaginaOfertas(TestCase):
 
     def setUp(self):
         self.client = Client()
-        self.url = reverse('ofertas')
+        self.url = reverse('promocoes')
         self.hoje = timezone.now().date()
 
     def tearDown(self):
@@ -133,8 +187,28 @@ class Teste_03_PaginaOfertas(TestCase):
 
     def test_13_deve_listar_apenas_produtos_vencendo_em_30_dias(self):
         """Verifica se apenas produtos com vencimento em até 30 dias são exibidos."""
-        Produto.objects.create(nome="Promo", dataValidade=self.hoje + timedelta(days=10), preco=5.00)
-        Produto.objects.create(nome="Normal", dataValidade=self.hoje + timedelta(days=60), preco=8.00)
+        Produto.objects.create(
+            nome="Promo", 
+            codigo="PROMO-002", 
+            descricao="Produto promo oferta",
+            categoria="Geral", 
+            preco_custo=Decimal("2.00"), 
+            preco=Decimal("5.00"),
+            unidade_medida="unidade", 
+            dataValidade=self.hoje + timedelta(days=10)
+        
+        )
+        Produto.objects.create(
+            nome="Normal", 
+            codigo="NORM-001", 
+            descricao="Produto normal sem oferta",
+            categoria="Geral", 
+            preco_custo=Decimal("4.00"), 
+            preco=Decimal("8.00"),
+            unidade_medida="unidade", 
+            dataValidade=self.hoje + timedelta(days=60)
+        
+        )
         response = self.client.get(self.url)
         nomes = [p.nome for p in response.context['produtos']]
         self.assertIn("Promo", nomes)
@@ -242,7 +316,14 @@ class Teste_06_Carrinho(TestCase):
         self.client.login(username="cliente", password="cliente@123")
         self.hoje = timezone.now().date()
         self.produto = Produto.objects.create(
-            nome="Paracetamol", preco=8.00, dataValidade=self.hoje + timedelta(days=60)
+            nome="Paracetamol", 
+            codigo="PAR-001", 
+            descricao="Paracetamol 750mg",
+            categoria="Analgesicos", 
+            preco_custo=Decimal("3.00"), 
+            preco=Decimal("8.00"),
+            unidade_medida="caixa", 
+            dataValidade=self.hoje + timedelta(days=60)
         )
 
     def tearDown(self):
@@ -307,7 +388,14 @@ class Teste_07_Checkout(TestCase):
         self.hoje = timezone.now().date()
         self.loja = Loja.objects.create(nome="Loja Central", ativa=True)
         self.produto = Produto.objects.create(
-            nome="Ibuprofeno", preco=12.00, dataValidade=self.hoje + timedelta(days=60)
+            nome="Ibuprofeno", 
+            codigo="IBU-001", 
+            descricao="Ibuprofeno 400mg",
+            categoria="Analgesicos", 
+            preco_custo=Decimal("5.00"), 
+            preco=Decimal("12.00"),
+            unidade_medida="caixa", 
+            dataValidade=self.hoje + timedelta(days=60)
         )
         self.estoque = Estoque.objects.create(produto=self.produto, loja=self.loja, quantidade=50)
         CarrinhoProduto.objects.create(usuario=self.user, produto=self.produto, quantidade=2)
@@ -408,7 +496,14 @@ class Teste_09_RepetirCompra(TestCase):
         self.hoje = timezone.now().date()
         self.loja = Loja.objects.create(nome="Loja Norte", ativa=True)
         self.produto = Produto.objects.create(
-            nome="Vitamina C", preco=9.00, dataValidade=self.hoje + timedelta(days=60)
+            nome="Vitamina C", 
+            codigo="VIT-C-001", 
+            descricao="Vitamina C 1000mg",
+            categoria="Suplementos", 
+            preco_custo=Decimal("4.00"), 
+            preco=Decimal("9.00"),
+            unidade_medida="caixa", 
+            dataValidade=self.hoje + timedelta(days=60)
         )
         Estoque.objects.create(produto=self.produto, loja=self.loja, quantidade=20)
         self.pedido = Pedido.objects.create(usuario=self.user, loja=self.loja)
@@ -453,3 +548,192 @@ class Teste_09_RepetirCompra(TestCase):
         url = reverse('repetir_compra', args=[self.pedido.id])
         response = self.client.get(url)
         self.assertRedirects(response, reverse('meus_pedidos'))
+        
+
+# --- Teste de descontos por Quantidade ---
+
+# CLASSE 10 - Testes de Desconto por Quantidade
+
+class Teste_10_DescontoPorQuantidade(TestCase):
+    """
+    Testa a lógica de desconto progressivo por quantidade do model Produto
+    e o cálculo correto do subtotal no CarrinhoProduto.
+
+    Regras de negócio:
+        - quantidade < 3   → sem desconto     (100% do preço)
+        - quantidade >= 3  → 5% de desconto   (95% do preço)
+        - quantidade >= 5  → 10% de desconto  (90% do preço)
+        - quantidade >= 10 → 20% de desconto  (80% do preço)
+    """
+
+    def setUp(self):
+        self.user = User.objects.create_user(username="desconto_user", password="desc@123")
+        self.hoje = timezone.now().date()
+        self.produto = Produto.objects.create(
+            nome="Vitamina D",
+            codigo="VIT-D-001",
+            descricao="Suplemento vitamina D 1000UI",
+            dataValidade=self.hoje + timedelta(days=90),
+            categoria="Suplementos",
+            preco_custo=Decimal("5.00"),
+            preco=Decimal("10.00"),
+            unidade_medida="caixa",
+        )
+
+    def tearDown(self):
+        time.sleep(0)
+
+    # Testes do método obterPrecoPorQuantidade (no model Produto)
+
+    def test_43_preco_sem_desconto_para_quantidade_1(self):
+        """Quantidade 1 não deve ter desconto — preço cheio."""
+        preco = self.produto.obterPrecoPorQuantidade(1)
+        self.assertEqual(preco, Decimal("10.00"))
+
+    def test_44_preco_sem_desconto_para_quantidade_2(self):
+        """Quantidade 2 também não deve ter desconto — abaixo do mínimo."""
+        preco = self.produto.obterPrecoPorQuantidade(2)
+        self.assertEqual(preco, Decimal("10.00"))
+
+    def test_45_preco_com_5_porcento_de_desconto_para_quantidade_3(self):
+        """Quantidade 3 deve aplicar 5% de desconto — R$ 9.50."""
+        preco = self.produto.obterPrecoPorQuantidade(3)
+        self.assertEqual(preco, Decimal("10.00") * Decimal("0.95"))
+
+    def test_46_preco_com_5_porcento_de_desconto_para_quantidade_4(self):
+        """Quantidade 4 ainda deve aplicar apenas 5% — abaixo de 5 unidades."""
+        preco = self.produto.obterPrecoPorQuantidade(4)
+        self.assertEqual(preco, Decimal("10.00") * Decimal("0.95"))
+
+    def test_47_preco_com_10_porcento_de_desconto_para_quantidade_5(self):
+        """Quantidade 5 deve aplicar 10% de desconto — R$ 9.00."""
+        preco = self.produto.obterPrecoPorQuantidade(5)
+        self.assertEqual(preco, Decimal("10.00") * Decimal("0.90"))
+
+    def test_48_preco_com_10_porcento_de_desconto_para_quantidade_9(self):
+        """Quantidade 9 ainda deve aplicar 10% — abaixo de 10 unidades."""
+        preco = self.produto.obterPrecoPorQuantidade(9)
+        self.assertEqual(preco, Decimal("10.00") * Decimal("0.90"))
+
+    def test_49_preco_com_20_porcento_de_desconto_para_quantidade_10(self):
+        """Quantidade 10 deve aplicar 20% de desconto — R$ 8.00."""
+        preco = self.produto.obterPrecoPorQuantidade(10)
+        self.assertEqual(preco, Decimal("10.00") * Decimal("0.80"))
+
+    def test_50_preco_com_20_porcento_de_desconto_para_quantidade_grande(self):
+        """Quantidade 50 deve manter o desconto máximo de 20%."""
+        preco = self.produto.obterPrecoPorQuantidade(50)
+        self.assertEqual(preco, Decimal("10.00") * Decimal("0.80"))
+
+
+    # Testes do calcular_subtotal (no model CarrinhoProduto)    
+
+    def test_51_subtotal_sem_desconto_para_2_unidades(self):
+        """
+        Subtotal de 2 unidades = preço cheio × 2.
+        2 × R$ 10.00 = R$ 20.00
+        """
+        item = CarrinhoProduto(
+            usuario=self.user,
+            produto=self.produto,
+            quantidade=2,
+        )
+        self.assertEqual(item.calcular_subtotal(), Decimal("20.00"))
+
+    def test_52_subtotal_com_desconto_de_5_porcento_para_3_unidades(self):
+        """
+        Subtotal de 3 unidades com 5% de desconto.
+        3 × R$ 9.50 = R$ 28.50
+        """
+        item = CarrinhoProduto(
+            usuario=self.user,
+            produto=self.produto,
+            quantidade=3,
+        )
+        esperado = Decimal("10.00") * Decimal("0.95") * 3
+        self.assertEqual(item.calcular_subtotal(), esperado)
+
+    def test_53_subtotal_com_desconto_de_10_porcento_para_5_unidades(self):
+        """
+        Subtotal de 5 unidades com 10% de desconto.
+        5 × R$ 9.00 = R$ 45.00
+        """
+        item = CarrinhoProduto(
+            usuario=self.user,
+            produto=self.produto,
+            quantidade=5,
+        )
+        esperado = Decimal("10.00") * Decimal("0.90") * 5
+        self.assertEqual(item.calcular_subtotal(), esperado)
+
+    def test_54_subtotal_com_desconto_de_20_porcento_para_10_unidades(self):
+        """
+        Subtotal de 10 unidades com 20% de desconto.
+        10 × R$ 8.00 = R$ 80.00
+        """
+        item = CarrinhoProduto(
+            usuario=self.user,
+            produto=self.produto,
+            quantidade=10,
+        )
+        esperado = Decimal("10.00") * Decimal("0.80") * 10
+        self.assertEqual(item.calcular_subtotal(), esperado)
+
+    def test_55_desconto_aplicado_no_checkout_para_quantidade_10(self):
+        """
+        Verifica que o checkout usa o preço com desconto de 20%
+        ao criar o ItemPedido para quantidade >= 10.
+        """
+        loja = Loja.objects.create(
+            nome="Loja Teste Desconto",
+            endereco="Rua A",
+            numero="1",
+            bairro="Centro",
+            cidade="Recife",
+            estado="PE",
+            cep="50000-000",
+            ativa=True,
+        )
+        Estoque.objects.create(produto=self.produto, loja=loja, quantidade=50)
+        CarrinhoProduto.objects.create(
+            usuario=self.user, produto=self.produto, quantidade=10
+        )
+
+        self.client = Client()
+        self.client.login(username="desconto_user", password="desc@123")
+        self.client.post(reverse('checkout'), {'loja': loja.id})
+
+        item_pedido = ItemPedido.objects.get(
+            pedido__usuario=self.user,
+            produto=self.produto,
+        )
+        self.assertEqual(item_pedido.preco_unitario, Decimal("10.00") * Decimal("0.80"))
+
+    def test_56_sem_desconto_no_checkout_para_quantidade_2(self):
+        """
+        Verifica que o checkout usa preço cheio para quantidade < 3.
+        """
+        loja = Loja.objects.create(
+            nome="Loja Teste Sem Desconto",
+            endereco="Rua B",
+            numero="2",
+            bairro="Boa Vista",
+            cidade="Recife",
+            estado="PE",
+            cep="50000-001",
+            ativa=True,
+        )
+        Estoque.objects.create(produto=self.produto, loja=loja, quantidade=50)
+        CarrinhoProduto.objects.create(
+            usuario=self.user, produto=self.produto, quantidade=2
+        )
+
+        self.client = Client()
+        self.client.login(username="desconto_user", password="desc@123")
+        self.client.post(reverse('checkout'), {'loja': loja.id})
+
+        item_pedido = ItemPedido.objects.get(
+            pedido__usuario=self.user,
+            produto=self.produto,
+        )
+        self.assertEqual(item_pedido.preco_unitario, Decimal("10.00"))
