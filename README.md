@@ -158,5 +158,68 @@ O **FarmaTec** é um Sistema web para gerenciamento de medicamentos, controle de
 
 </details>
 
+<details>
+<summary><strong>💻 Entrega 4 - Funcionalidades e Testes automatizados</strong></summary>
+
+### ✅ Funcionalidades Implementadas
+- Comprador ter direito a Desconto Baseado na quantidade de produtos
+- rastreamento de lote
+- Testes automatizados das historias
+  
+  
+
+### 📊 Gestão de Projeto
+
+## Prints do backlog
+**📋 Lista de histórias -Sprint - 04**
+<img width="1542" height="210" alt="Captura de tela 2026-05-16 150134" src="https://github.com/user-attachments/assets/5cfac7d4-1b98-459e-879c-807c56ce04c9" />
+
+
+
+
+## Print do Quadro da Sprint 04
+
+<img width="1232" height="608" alt="image" src="https://github.com/user-attachments/assets/201b3aa0-79f7-4c9f-92f6-97e6a99ef4fb" />
+
+
+### 🐛 Controle de Issues
+- **Issue/Bug Tracker**
+  
+<img width="1576" height="745" alt="image" src="https://github.com/user-attachments/assets/b0946094-9e2a-4ba5-b7a1-8d5d4b681c41" />
+
+
+
+### 🌐 Link do Deploy
+- **🔗 Aplicação em Produção:** [farmatec.onrender.com](https://farmatec.onrender.com/)
+
+> ⚠️ **Observação:** Como estamos usando o plano gratuito do Render, após um período de tempo sem atividade, a aplicação em deploy entrará em "hibernação". Ao acessar a aplicação nesse estado, é necessário esperar até 1-2 minutos para que ela "acorde".
+
+**Intrução de acesso:** Ao acessar o sistema com o link acima, insira essas informações:|user:admin|senha:admin@123|
+
+### 🎥 Apresentação
+- **Screencast das Novas Historias do Usuários**
+
+  [Link para quarto screencast]()
+
+- **Screencast Test do Programa**
+
+  [Link para screencast de teste]()
+
+  - **Screencast CI/CD**
+
+  [Link para screencast]()
+
+- **Relatório de Programação em Par 4**
+  
+  [📄 Link para o relatório](https://docs.google.com/document/d/1nrI-Gh9Ewjh2qyL0VqIhPDLBWp4PZearCMu3cJqklTM/edit?usp=drivesdk)
+
+   [📄 Link para o documento Contributing]()
+
+
+</details>
+
+
+
+
 
 
