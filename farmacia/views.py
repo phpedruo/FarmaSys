@@ -1,4 +1,3 @@
-# Adicione este import no topo
 import csv
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
@@ -22,10 +21,8 @@ def pagina_inicial(request):
     hoje = timezone.now().date()
     prazo = hoje + timedelta(days=30)
 
-    # Produtos com vencimento nos próximos 30 dias
     promocoes = Produto.objects.filter(dataValidade__range=[hoje, prazo])[:6]
 
-    # Destaques gerais (excluindo os que já estão em promoção)
     produtos = Produto.objects.exclude(
         dataValidade__range=[hoje, prazo]
     )[:8]
@@ -234,16 +231,16 @@ def checkout(request):
             pedido = Pedido.objects.create(usuario=request.user, loja=loja)
 
             for item in itens:
+                estoque = Estoque.objects.select_for_update().get(produto=item.produto, loja=loja)
+
                 ItemPedido.objects.create(
                     pedido=pedido,
                     produto=item.produto,
                     quantidade=item.quantidade,
-                    preco_unitario=item.produto.preco,
+                    preco_unitario=item.produto.obterPrecoPorQuantidade(item.quantidade),
                     lote=estoque.lote,
-                    preco_unitario= item.produto.obterPrecoPorQuantidade(item.quantidade),
                 )
 
-                estoque = Estoque.objects.select_for_update().get(produto=item.produto, loja=loja)
                 estoque.quantidade -= item.quantidade
                 estoque.save(update_fields=['quantidade', 'data_ultima_atualizacao'])
 
@@ -304,7 +301,6 @@ def repetir_compra(request, pedido_id):
 
     return redirect('carrinho')
 
-# NOVAS funções — adicione ao final do arquivo
 
 @login_required
 @user_passes_test(is_staff)
@@ -358,7 +354,7 @@ def exportar_contatos(request, numero_lote):
 
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = f'attachment; filename="recall_{numero_lote}.csv"'
-    response.write('\ufeff')  # BOM para abrir corretamente no Excel
+    response.write('\ufeff')
 
     writer = csv.writer(response)
     writer.writerow(['Usuário', 'Data da Venda', 'Quantidade'])
